@@ -33,6 +33,8 @@ public:
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+	void SetParent(WorldTransform* worldTransform) { worldTransform_.parent_ = worldTransform; }
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;

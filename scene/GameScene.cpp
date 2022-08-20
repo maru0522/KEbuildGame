@@ -34,10 +34,18 @@ void GameScene::Initialize() {
     //ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
     PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
+    // レールカメラの生成
+    railCamera_ = std::make_unique<RailCamera>();
+    Vector3 pos(0, 0, -50);
+    Vector3 rad(0, 0, 0);
+    // レールカメラの初期化
+    railCamera_->Initialize(pos, rad);
+
     // 自キャラの生成
     player_ = std::make_unique<Player>();
     // 自キャラの初期化
     player_->Initialize(model_, textureHandle_);
+    player_->SetParent(railCamera_->GetWorldTransform());
 
     // 敵の生成
     enemy_ = std::make_unique<Enemy>();
@@ -62,6 +70,8 @@ void GameScene::Update() {
     enemy_->Update();
     // 天球の更新
     skydome_->Update();
+    // レールカメラの更新
+    railCamera_->Update();
 
     CheckAllCollision();
 
@@ -121,11 +131,11 @@ void GameScene::Draw() {
      //model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
 
     // 自キャラの描画
-    player_->Draw(debugCamera_->GetViewProjection());
+    player_->Draw(railCamera_->GetViewProjection());
     // 敵の描画
-    enemy_->Draw(debugCamera_->GetViewProjection());
+    enemy_->Draw(railCamera_->GetViewProjection());
     // 天球の描画
-    skydome_->Draw(debugCamera_->GetViewProjection());
+    skydome_->Draw(railCamera_->GetViewProjection());
 
     //ラインの描画
 

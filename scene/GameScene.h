@@ -15,6 +15,7 @@
 #include <memory>
 #include "Enemy.h"
 #include "SkyDome.h"
+#include "RailCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -73,6 +74,7 @@ private: // メンバ変数
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Enemy> enemy_;
 	std::unique_ptr<Skydome> skydome_;
+	std::unique_ptr<RailCamera> railCamera_;
 
 	// 3Dモデル
 	Model* modelSkyDome_ = nullptr;

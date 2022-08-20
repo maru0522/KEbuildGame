@@ -171,6 +171,10 @@ void WorldTransform::UpdateMatrix()
 	matWorld_ *= matRot;
 	matWorld_ *= matTrans;
 
+	if (parent_) {
+		matWorld_ *= parent_->matWorld_;
+	}
+
 	// s—ñ‚Ì“]‘—
 	TransferMatrix();
 }
