@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "DebugText.h"
@@ -16,12 +15,12 @@
 #include "Enemy.h"
 #include "SkyDome.h"
 #include "RailCamera.h"
+#include <sstream>
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
 class GameScene {
-
 public: // メンバ関数
   /// <summary>
   /// コンストクラタ
@@ -48,8 +47,14 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void PopEnemy(Vector3& pos);
+
 	// 衝突判定と応答
 	void CheckAllCollision();
+
+	void LoadEnemyPopData();
+
+	void UpdateEnemyPopCommands();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -70,9 +75,14 @@ private: // メンバ変数
 	//
 	Sprite* sprite_ = nullptr;
 
+	// 敵発生コマンド
+	std::stringstream enemyPosCommands_;
+	bool isWaitEnemyPop_ = false;
+	uint32_t waitTime_ = 0;
+
 
 	std::unique_ptr<Player> player_;
-	std::unique_ptr<Enemy> enemy_;
+	std::list<std::unique_ptr<Enemy>> enemys_;
 	std::unique_ptr<Skydome> skydome_;
 	std::unique_ptr<RailCamera> railCamera_;
 

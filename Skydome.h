@@ -8,6 +8,9 @@ public:
     void Initialize(Model* model);
     void Update();
     void Draw(ViewProjection viewProjection_);
+
+    void SetParent(WorldTransform* worldTransform) { worldTransform_.parent_ = worldTransform; }
+
 private:
     // ワールド変換データ
     WorldTransform worldTransform_;

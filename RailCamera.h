@@ -21,4 +21,3 @@ private:
     Input* input_ = nullptr;
     DebugText* debugText_ = nullptr;
 };
-

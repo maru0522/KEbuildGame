@@ -41,8 +41,11 @@ private:
 	// 自キャラ
 	Player* player_ = nullptr;
 
+	// デスフラグ
+	bool isDead_ = false;
+
 public:
-	void Initialize(Model* model, uint32_t textureHandle);
+	void Initialize(Model* model, uint32_t textureHandle, Vector3& pos);
 	void Fire();
 	void PhaseInitApproach();
 	void PhaseApproach();
@@ -50,6 +53,8 @@ public:
 	void Update();
 	void Draw(ViewProjection viewProjection);
 	void SetPlayer(Player* player) { player_ = player; }
+
+	bool isDead() const { return isDead_; }
 
 	// 衝突を検出したら呼びだされるコールバック関数
 	void OnCollision();
@@ -59,4 +64,6 @@ public:
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
+
+	void SetParent(WorldTransform* worldTransform) { worldTransform_.parent_ = worldTransform; }
 };

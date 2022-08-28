@@ -20,7 +20,8 @@ void RailCamera::Update()
 {
 #pragma region worldTransform
     // ワールドトランスフォームの座標の数値を加算（移動）
-    worldTransform_.translation_.z -= 0.01;
+    //worldTransform_.translation_.z -= 0.01;
+
     // ワールドトランスフォームの角度の数値を加算（回転）
 
     // ワールドトランスフォームのワールド行列再計算
