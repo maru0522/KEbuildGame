@@ -56,61 +56,49 @@ void Player::Move()
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 }
 
-void Player::Rotate()
-{
-	if (input_->PushKey(DIK_U)) {
-		worldTransform_.rotation_.y -= 0.05f;
-	}
-	if (input_->PushKey(DIK_I)) {
-		worldTransform_.rotation_.y += 0.05f;
-	}
-
-}
-
-void Player::Attack()
-{
-	if (input_->PushKey(DIK_SPACE)) {
-		// 弾の速度
-		const float kBulletSpeed = 1.0f;
-		Vector3 velocity(0, 0, kBulletSpeed);
-
-		// 速度ベクトルを自機の向きに合わせて回転させる
-		velocity = Calc::DotVecMat(velocity, worldTransform_.matWorld_);
-
-		// 弾を発射し、初期化
-		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initialize(model_, GetWorldPosition() , velocity);
-
-		// 弾を登録する
-		bullets_.push_back(std::move(newBullet));
-	}
-}
+//void Player::Rotate()
+//{
+//	if (input_->PushKey(DIK_U)) {
+//		worldTransform_.rotation_.y -= 0.05f;
+//	}
+//	if (input_->PushKey(DIK_I)) {
+//		worldTransform_.rotation_.y += 0.05f;
+//	}
+//
+//}
+//
+//void Player::Attack()
+//{
+//	if (input_->PushKey(DIK_SPACE)) {
+//		// 弾の速度
+//		const float kBulletSpeed = 1.0f;
+//		Vector3 velocity(0, 0, kBulletSpeed);
+//
+//		// 速度ベクトルを自機の向きに合わせて回転させる
+//		velocity = Calc::DotVecMat(velocity, worldTransform_.matWorld_);
+//
+//		// 弾を発射し、初期化
+//		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
+//		newBullet->Initialize(model_, GetWorldPosition() , velocity);
+//
+//		// 弾を登録する
+//		bullets_.push_back(std::move(newBullet));
+//	}
+//}
 
 void Player::Update()
 {
-	// デスフラグの立った弾を削除
-	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bulet) {
-		return bulet->isDead();
-					   });
-
+#ifdef _DEBUG
 	// デバッグテキスト
 	debugText_->SetPos(50, 50);
 	debugText_->Printf("player:(%f,%f,%f)",
 					   worldTransform_.translation_.x,
 					   worldTransform_.translation_.y,
 					   worldTransform_.translation_.z);
+#endif
 
 	// 移動
 	Move();
-	// 回転
-	Rotate();
-	// 弾発射
-	Attack();
-
-	// 弾更新
-	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
-		bullet->Update();
-	}
 
 	//ワールド行列更新
 	worldTransform_.UpdateMatrix();
@@ -119,14 +107,11 @@ void Player::Update()
 void Player::Draw(ViewProjection viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
-		bullet->Draw(viewProjection);
-	}
 }
 
-void Player::OnCollision()
-{
-}
+//void Player::OnCollision()
+//{
+//}
 
 Vector3 Player::GetWorldPosition()
 {
