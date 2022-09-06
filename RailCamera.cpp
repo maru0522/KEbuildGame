@@ -52,6 +52,27 @@ void RailCamera::Update()
     viewProjection_.UpdateMatrix();
 #pragma endregion
 
-    debugText_->SetPos(30, 30);
-    debugText_->Printf("eye.x:%f,eye.y:%f,eye.z:%f", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
+#ifdef _DEBUG
+    // デバッグテキスト
+    debugText_->SetPos(80, 10);
+    debugText_->Printf("eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
+
+    debugText_->SetPos(10, 30);
+    debugText_->Printf("vwCameraPos:(%f,%f,%f)", viewProjection_.constMap->cameraPos.x, viewProjection_.constMap->cameraPos.y, viewProjection_.constMap->cameraPos.z);
+
+    debugText_->SetPos(20, 50);
+    debugText_->Printf("cameraPos:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
+#endif
+}
+
+Vector3 RailCamera::GetWorldPosition()
+{
+    // ワールド座標を入れる変数
+    Vector3 worldPos;
+    // ワールド行列の平行移動成分を取得（ワールド座標）
+    worldPos.x = worldTransform_.matWorld_.m[3][0];
+    worldPos.y = worldTransform_.matWorld_.m[3][1];
+    worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+    return worldPos;
 }

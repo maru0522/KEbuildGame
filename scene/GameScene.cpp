@@ -63,6 +63,8 @@ void GameScene::Update() {
     // 自キャラの更新
     player_->Update();
 
+    //input_->IsTriggerMouse
+
     // 天球の更新
     skydome_->Update();
     // レールカメラの更新

@@ -12,6 +12,9 @@ public:
 
     ViewProjection GetViewProjection() { return viewProjection_; }
     WorldTransform* GetWorldTransform() { return &worldTransform_; }
+
+    // ワールド座標を取得
+    Vector3 GetWorldPosition();
 private:
     // ワールド変換データ
     WorldTransform worldTransform_;

@@ -90,7 +90,7 @@ void Player::Update()
 {
 #ifdef _DEBUG
 	// デバッグテキスト
-	debugText_->SetPos(50, 50);
+	debugText_->SetPos(70, 70);
 	debugText_->Printf("player:(%f,%f,%f)",
 					   worldTransform_.translation_.x,
 					   worldTransform_.translation_.y,
@@ -98,7 +98,7 @@ void Player::Update()
 #endif
 
 	// 移動
-	Move();
+	//Move();
 
 	//ワールド行列更新
 	worldTransform_.UpdateMatrix();
