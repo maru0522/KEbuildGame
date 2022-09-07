@@ -14,7 +14,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle)
 	input_ = Input::GetInstance();
 	debugText_ = DebugText::GetInstance();
 
-	worldTransform_.translation_ = { 0,0,20 };
+	worldTransform_.translation_ = { -2,-2,10 };
+	worldTransform_.rotation_ = { Calc::ConvertToRadian(-10),0,0 };
 
 	worldTransform_.Initialize();
 }

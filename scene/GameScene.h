@@ -16,6 +16,7 @@
 #include "SkyDome.h"
 #include "RailCamera.h"
 #include <sstream>
+#include "Stage.h"
 
 /// <summary>
 /// ゲームシーン
@@ -47,6 +48,9 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+private:
+	void PlayerMove();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -55,10 +59,12 @@ private: // メンバ変数
 	Model* model_ = nullptr;
 	DebugCamera* debugCamera_ = nullptr;
 	bool isDebugCameraActive_ = false;
+	Stage* stage_ = nullptr;
 
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 	uint32_t reticleHandle_ = 0;
+	uint32_t testBlockHandle_ = 0;
 
 	ViewProjection viewProjection_;
 	ViewProjection debugViewProjection_;
@@ -66,6 +72,8 @@ private: // メンバ変数
 	//
 	Sprite* sprite_ = nullptr;
 
+	// プレイヤーの座標[マス目]
+	Vector3 nSquarePos_ = { 0,0,0 };
 
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Skydome> skydome_;

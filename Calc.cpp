@@ -8,3 +8,15 @@ Vector3& Calc::DotVecMat(const Vector3 vec3, const Matrix4 worldTransform) {
 	result.z = vec4.x * worldTransform.m[0][2] + vec4.y * worldTransform.m[1][2] + vec4.z * worldTransform.m[2][2] + vec4.w * worldTransform.m[3][2];
 	return result;
 }
+
+float& Calc::ConvertToRadian(const int32_t& angle)
+{
+	float result = angle * PI / 180 ;
+	return result;
+}
+
+float& Calc::ConvertToAngle(const int32_t& rad)
+{
+	float result = 180 * rad;
+	return result;
+}

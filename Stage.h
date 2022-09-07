@@ -1,24 +1,42 @@
 #pragma once
 #include "Model.h"
+#include "input.h"
+#include "DebugText.h"
+#include "Block.h"
 
 class Stage
 {
-public:
-    void InitStage1(Model* blockModel, uint32_t blockTexture);
+public: // 静的メンバ変数
+    static const int squareLengthX_ = 100;
+    static const int squareLengthY_ = 100;
+    static const int squareLengthZ_ = 100;
 
-    void UpdateStage1();
+public: // メンバ変数
+    std::array<std::array<std::array<bool, squareLengthX_>, squareLengthY_>, squareLengthZ_> isFillCubes_{};
+    // モデル読み込みされたブロックの一辺の長さ
+    const float blockSideLength_ = 2.0f;
 
-    void DrawStage1(ViewProjection viewProjection);
+public: // メンバ関数
+    void LoadStage(std::string path);
+
+    void InitStage(Model* blockModel, uint32_t blockTexture);
+
+    void UpdateStage();
+
+    void DrawStage(ViewProjection viewProjection);
 
 private:
-    // テクスチャハンドル
-    uint32_t blockTexture_ = 0u;
+    // ワールドトランスフォーム
+    std::vector<Block> blocks_{};
 
     // ブロックモデル　*デフォルト
     Model* blockModel_ = nullptr;
 
-    static const uint32_t indexBlock_ = 100;
+    // テクスチャハンドル
+    uint32_t blockTexture_ = 0u;
 
-    // ブロックの位置を格納した配列
-    std::array<WorldTransform, indexBlock_> blockData_;
+    Input* input_ = nullptr;
+    DebugText* debugText_ = nullptr;
 };
+
+Stage* GetInstanceStage();

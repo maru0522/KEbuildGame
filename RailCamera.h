@@ -15,6 +15,10 @@ public:
 
     // ワールド座標を取得
     Vector3 GetWorldPosition();
+    void SetWorldPosition(Vector3& pos);
+
+private:
+    void Move();
 private:
     // ワールド変換データ
     WorldTransform worldTransform_;

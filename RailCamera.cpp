@@ -8,11 +8,14 @@ void RailCamera::Initialize(Vector3 pos, Vector3 rad)
     worldTransform_.translation_ = pos;
     worldTransform_.rotation_ = rad;
    
+    worldTransform_.rotation_ = {Calc::ConvertToRadian(10),0,0};
+
     worldTransform_.Initialize();
 
     // ビュープロジェクションの初期化
     viewProjection_.Initialize();
 
+    input_ = Input::GetInstance();
     debugText_ = DebugText::GetInstance();
 }
 
@@ -20,7 +23,7 @@ void RailCamera::Update()
 {
 #pragma region worldTransform
     // ワールドトランスフォームの座標の数値を加算（移動）
-    //worldTransform_.translation_.z -= 0.01;
+    //Move();
 
     // ワールドトランスフォームの角度の数値を加算（回転）
 
@@ -75,4 +78,65 @@ Vector3 RailCamera::GetWorldPosition()
     worldPos.z = worldTransform_.matWorld_.m[3][2];
 
     return worldPos;
+}
+
+void RailCamera::SetWorldPosition(Vector3& pos)
+{
+    worldTransform_.translation_ = pos;
+}
+
+void RailCamera::Move()
+{
+    // 移動ベクトル
+    Vector3 move = { 0,0,0 };
+
+    // 移動速さ
+    const float kCharacterSpeed = 1.0f;
+
+    // 押した方向で移動ベクトルを変更
+    /*if (input_->PushKey(DIK_W)) {
+        move = { 0,0,kCharacterSpeed };
+    }
+    if (input_->PushKey(DIK_S)) {
+        move = { 0,0,-kCharacterSpeed };
+    }
+    if (input_->PushKey(DIK_A)) {
+        move = { -kCharacterSpeed,0,0 };
+    }
+    if (input_->PushKey(DIK_D)) {
+        move = { kCharacterSpeed,0,0 };
+    }*/
+
+    // 押した方向で移動ベクトルを変更
+    if (input_->TriggerKey(DIK_W)) {
+        move = { 0,0,kCharacterSpeed };
+    }
+    if (input_->TriggerKey(DIK_S)) {
+        move = { 0,0,-kCharacterSpeed };
+    }
+    if (input_->TriggerKey(DIK_A)) {
+        move = { -kCharacterSpeed,0,0 };
+    }
+    if (input_->TriggerKey(DIK_D)) {
+        move = { kCharacterSpeed,0,0 };
+    }
+#ifdef _DEBUG
+    /*if (input_->PushKey(DIK_SPACE)) {
+        move = { 0,kCharacterSpeed,0 };
+    }
+    if (input_->PushKey(DIK_LSHIFT)) {
+        move = { 0,-kCharacterSpeed,0 };
+    }*/
+
+    if (input_->TriggerKey(DIK_SPACE)) {
+        move = { 0,kCharacterSpeed,0 };
+    }
+    if (input_->TriggerKey(DIK_LSHIFT)) {
+        move = { 0,-kCharacterSpeed,0 };
+    }
+#endif
+
+    worldTransform_.translation_.x += move.x;
+    worldTransform_.translation_.y += move.y;
+    worldTransform_.translation_.z += move.z;
 }
