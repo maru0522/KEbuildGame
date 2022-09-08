@@ -11,10 +11,10 @@ void Stage::LoadStage(std::string pathCSV)
     std::ifstream ifs(pathCSV);
 
     std::string line, tmp;
-    std::array<int, 3> coordinate;
+    std::array<int, 4> coordinate; // coordinate[3]はindexBlockID
     while (std::getline(ifs, line)) {
         std::istringstream line_stream(line);
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             std::getline(line_stream, tmp, ',');
             coordinate[i] = std::stoi(tmp);
         }
@@ -29,7 +29,7 @@ void Stage::LoadStage(std::string pathCSV)
         tmpBlock_.SetWorldTransform(tmpWT_);
         //tmpBlock_.GetWorldTransform()->Initialize();
         //tmpBlock_.GetWorldTransform()->UpdateMatrix();
-        tmpBlock_.Initilize(blockModel_, blockTexture_, index);
+        tmpBlock_.Initilize(blockModel_, coordinate[3]);
         blocks_.push_back(tmpBlock_);
         // TODO:csvの記号によってテクスチャ変更。
     }

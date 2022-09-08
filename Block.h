@@ -6,15 +6,24 @@
 #include <cassert>
 #include "TextureManager.h"
 
+enum blockID {
+    FLOOR = 1,
+    MEMORY,
+    GOAL
+};
+
 class Block
 {
 public:
-    void Initilize(Model* blockModel, uint32_t blockTexture, uint32_t indexBlock);
+    void Initilize(Model* blockModel, uint32_t indexBlock);
     void Update();
     void Draw(ViewProjection viewProjection);
 
     WorldTransform* GetWorldTransform() { return &worldTransform_; }
-    WorldTransform SetWorldTransform(WorldTransform worldTransform) { worldTransform_ = worldTransform; }
+    void SetWorldTransform(WorldTransform worldTransform) { worldTransform_ = worldTransform; }
+
+    uint32_t* GetIndexBlock() { return &indexBlock_; }
+    void SetIndexBlock(uint32_t id) { indexBlock_ = id; }
 
 private:
     WorldTransform worldTransform_;
@@ -22,8 +31,8 @@ private:
     // ブロックモデル　*デフォルト
     Model* model_ = nullptr;
 
-    // テクスチャハンドル
-    uint32_t texture_ = 0u;
+    // テクスチャハンドルの配列
+    std::array<uint32_t, 3> textures_ = {};
 
     // ブロックID
     uint32_t indexBlock_ = 0;

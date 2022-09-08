@@ -1,14 +1,21 @@
 #include "Block.h"
+#include <cassert>
 
-void Block::Initilize(Model* blockModel, uint32_t blockTexture, uint32_t indexBlock)
+
+void Block::Initilize(Model* blockModel, uint32_t indexBlock)
 {
     // NULLポインタチェック
     assert(blockModel);
+    assert(indexBlock > 0);
+
 
     // 引数情報の受け渡し
     model_ = blockModel;
-    texture_ = blockTexture; 
     indexBlock_ = indexBlock;
+
+    textures_[0] = TextureManager::Load("cube/cube.jpg");
+    textures_[1] = TextureManager::Load("Task1_2Resources/bullet.png");
+    textures_[2] = TextureManager::Load("Task1_2Resources/enemyBullet.png");
 
     worldTransform_.Initialize();
     worldTransform_.UpdateMatrix();
@@ -32,5 +39,5 @@ void Block::Update()
 
 void Block::Draw(ViewProjection viewProjection)
 {
-    model_->Draw(worldTransform_, viewProjection, texture_);
+    model_->Draw(worldTransform_, viewProjection, textures_[indexBlock_ - 1]);
 }
