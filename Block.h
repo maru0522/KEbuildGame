@@ -22,7 +22,7 @@ public:
     WorldTransform* GetWorldTransform() { return &worldTransform_; }
     void SetWorldTransform(WorldTransform worldTransform) { worldTransform_ = worldTransform; }
 
-    uint32_t* GetIndexBlock() { return &indexBlock_; }
+    uint32_t& GetIndexBlock() { return indexBlock_; }
     void SetIndexBlock(uint32_t id) { indexBlock_ = id; }
 
 private:

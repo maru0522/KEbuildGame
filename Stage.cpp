@@ -31,7 +31,6 @@ void Stage::LoadStage(std::string pathCSV)
         //tmpBlock_.GetWorldTransform()->UpdateMatrix();
         tmpBlock_.Initilize(blockModel_, coordinate[3]);
         blocks_.push_back(tmpBlock_);
-        // TODO:csvの記号によってテクスチャ変更。
     }
 }
 

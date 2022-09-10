@@ -4,6 +4,7 @@
 #include "TextureManager.h"
 #include <cassert>
 #include <fstream>
+#include "Calc.h"
 
 GameScene::GameScene() {}
 
@@ -11,6 +12,7 @@ GameScene::~GameScene() {
     delete model_;
     delete debugCamera_;
     delete modelSkyDome_;
+    delete pModel_;
 }
 
 void GameScene::Initialize() {
@@ -22,8 +24,12 @@ void GameScene::Initialize() {
     model_ = Model::Create();
     stage_ = GetInstanceStage();
 
+    // playerModel
+    pModel_ = Model::CreateFromOBJ("player");
+
     //ファイル名を指定してテクスチャを読み込む
     textureHandle_ = TextureManager::Load("Task1_2Resources/player.png");
+    testPlayerHandle_ = TextureManager::Load("player/PlayerMaterial_BaseColor.png");
     testBlockHandle_ = TextureManager::Load("Task1_2Resources/bullet.png");
 
     //デバックカメラの生成
@@ -40,16 +46,16 @@ void GameScene::Initialize() {
 
     // レールカメラの生成
     railCamera_ = std::make_unique<RailCamera>();
-    Vector3 pos(100, 100, 100);
-    Vector3 rad(0, 0, 0);
+    Vector3 pos(94, 96, 90);
+    Vector3 rad(0, Calc::ConvertToRadian(0), 0);
     // レールカメラの初期化
     railCamera_->Initialize(pos, rad);
 
     // 自キャラの生成
     player_ = std::make_unique<Player>();
     // 自キャラの初期化
-    player_->Initialize(model_, textureHandle_);
-    player_->SetParent(railCamera_->GetWorldTransform());
+    player_->Initialize(pModel_, testPlayerHandle_);
+    //player_->SetParent(railCamera_->GetWorldTransform());
 
     // 3Dモデルの生成
     modelSkyDome_ = Model::CreateFromOBJ("skydome", true);
@@ -59,9 +65,9 @@ void GameScene::Initialize() {
     // 天球の初期化
     skydome_->Initialize(modelSkyDome_);
     //skydome_->SetParent(railCamera_->GetWorldTransform());
-    
+
     stage_->InitStage(model_, textureHandle_);
-    stage_->LoadStage("Resources/Task1_2Resources/tutorial.csv");
+    stage_->LoadStage("Resources/Task1_2Resources/debugRoom.csv");
 }
 
 void GameScene::Update() {
@@ -71,7 +77,6 @@ void GameScene::Update() {
 
     // 自機更新 *座標更新は->RailCamera->GameSceneの順に委託している。
     player_->Update();
-    PlayerMove();
 
     stage_->UpdateStage();
 
@@ -172,170 +177,31 @@ void GameScene::PlayerMove()
     // 移動座標宣言
     Vector3 pos = { 0,0,0 };
 
-    nSquarePos_.x = static_cast<int32_t>(railCamera_->GetWorldPosition().x / stage_->blockSideLength_);
-    nSquarePos_.y = static_cast<int32_t>(railCamera_->GetWorldPosition().y / stage_->blockSideLength_);
-    nSquarePos_.z = static_cast<int32_t>(railCamera_->GetWorldPosition().z / stage_->blockSideLength_);
+//#ifdef _DEBUG
+//    if (input_->TriggerKey(DIK_SPACE)) {
+//        pos = {
+//            nCubePos_.x * stage_->blockSideLength_,
+//            (nCubePos_.y + 1) * stage_->blockSideLength_,
+//            nCubePos_.z * stage_->blockSideLength_
+//        };
+//        railCamera_->SetWorldPosition(pos);
+//    }
+//    if (input_->TriggerKey(DIK_LSHIFT)) {
+//        pos = {
+//            nCubePos_.x * stage_->blockSideLength_,
+//            (nCubePos_.y - 1) * stage_->blockSideLength_,
+//            nCubePos_.z * stage_->blockSideLength_
+//        };
+//        railCamera_->SetWorldPosition(pos);
+//    }
+//    if (input_->TriggerKey(DIK_P)) {
+//        railCamera_->GetWorldTransform()->rotation_.y += 45;
+//    }
+//#endif
+}
 
-#pragma region デフォルト
-    // if() *プレイヤーのrotateが{0,0,0}の時
-    if (input_->TriggerKey(DIK_W)) {
-        if (nSquarePos_.y > 1 && nSquarePos_.z < stage_->squareLengthZ_ - 2) { // マス目単位：y > 1 & z < (200 - 2) 
-            if (stage_->isFillCubes_[nSquarePos_.z + 1][nSquarePos_.y][nSquarePos_.x] == false &&
-                stage_->isFillCubes_[nSquarePos_.z + 1][nSquarePos_.y - 1][nSquarePos_.x] == true) { // 正面のマスにブロックがない & 正面のマスの1マス下にブロックがある（床がある）
-
-                // 1マス進む
-                pos = {
-                    nSquarePos_.x * stage_->blockSideLength_,
-                    nSquarePos_.y * stage_->blockSideLength_,
-                    (nSquarePos_.z + 1) * stage_->blockSideLength_
-                };
-                railCamera_->SetWorldPosition(pos);
-            }
-            else if (stage_->isFillCubes_[nSquarePos_.z + 1][nSquarePos_.y][nSquarePos_.x] == true) { // 正面のマスにブロックがある
-
-                // 座標は変わらない
-                // TODO: 床に対して向きが変わるようにする
-                // guess: rotation { CTR(90),0,0}
-            }
-            else if (stage_->isFillCubes_[nSquarePos_.z + 1][nSquarePos_.y][nSquarePos_.x] == false &&
-                     stage_->isFillCubes_[nSquarePos_.z + 1][nSquarePos_.y - 1][nSquarePos_.x] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
-
-                // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
-                pos = {
-                    nSquarePos_.x * stage_->blockSideLength_,
-                    (nSquarePos_.y - 1) * stage_->blockSideLength_,
-                    (nSquarePos_.z + 1) * stage_->blockSideLength_
-                };
-                railCamera_->SetWorldPosition(pos);
-
-                // TODO: 床に対して向きが変わるようにする
-                // guess: rotation { CTR(-90),0,0}
-            }
-        }
-    }
-    if (input_->TriggerKey(DIK_S)) {
-        if (nSquarePos_.y > 1 && nSquarePos_.z > 1) { // マス目単位：y > 1 & z > 1 
-            if (stage_->isFillCubes_[nSquarePos_.z - 1][nSquarePos_.y][nSquarePos_.x] == false &&
-                stage_->isFillCubes_[nSquarePos_.z - 1][nSquarePos_.y - 1][nSquarePos_.x] == true) { // 真後ろのマスにブロックがない & 真後ろのマスの1マス下にブロックがある（床がある）
-
-                // 1マス下がる
-                pos = {
-                    nSquarePos_.x * stage_->blockSideLength_,
-                    nSquarePos_.y * stage_->blockSideLength_,
-                    (nSquarePos_.z - 1) * stage_->blockSideLength_
-                };
-                railCamera_->SetWorldPosition(pos);
-            }
-            else if (stage_->isFillCubes_[nSquarePos_.z - 1][nSquarePos_.y][nSquarePos_.x] == true) { // 真後ろのマスにブロックがある
-
-                // 座標は変わらない
-                // TODO: 床に対して向きが変わるようにする
-                // guess: rotation { CTR(-90),0,0 }
-            }
-            else if (stage_->isFillCubes_[nSquarePos_.z - 1][nSquarePos_.y][nSquarePos_.x] == false &&
-                     stage_->isFillCubes_[nSquarePos_.z - 1][nSquarePos_.y - 1][nSquarePos_.x] == false) { // 真後ろのマスにブロックがない & 真後ろのマスの1マス下にもブロックがない（床がない）
-
-                // 後ろ斜め下のマスに下がる（足元の同じブロックの違う面の上に立つイメージ）
-                pos = {
-                    nSquarePos_.x * stage_->blockSideLength_,
-                    (nSquarePos_.y - 1) * stage_->blockSideLength_,
-                    (nSquarePos_.z - 1) * stage_->blockSideLength_
-                };
-                railCamera_->SetWorldPosition(pos);
-
-                // TODO: 床に対して向きが変わるようにする
-                // guess: rotation { CTR(90),0,0}
-            }
-        }
-    }
-    if (input_->TriggerKey(DIK_A)) {
-        if (nSquarePos_.x > 1 && nSquarePos_.y > 1) { // マス目単位：x > 1 & y > 1 
-            if (stage_->isFillCubes_[nSquarePos_.z][nSquarePos_.y][nSquarePos_.x - 1] == false &&
-                stage_->isFillCubes_[nSquarePos_.z][nSquarePos_.y - 1][nSquarePos_.x - 1] == true) { // 左のマスにブロックがない & 左のマスの1マス下にブロックがある（床がある）
-
-                // 1マス左に動く
-                pos = {
-                    (nSquarePos_.x - 1) * stage_->blockSideLength_,
-                    nSquarePos_.y * stage_->blockSideLength_,
-                    nSquarePos_.z * stage_->blockSideLength_
-                };
-                railCamera_->SetWorldPosition(pos);
-            }
-            else if (stage_->isFillCubes_[nSquarePos_.z][nSquarePos_.y][nSquarePos_.x - 1] == true) { // 左のマスにブロックがある
-
-                // 座標は変わらない
-                // TODO: 床に対して向きが変わるようにする
-                // guess: rotation { 0,0,CTR(90) }
-            }
-            else if (stage_->isFillCubes_[nSquarePos_.z][nSquarePos_.y][nSquarePos_.x - 1] == false &&
-                     stage_->isFillCubes_[nSquarePos_.z][nSquarePos_.y - 1][nSquarePos_.x - 1] == false) { // 左のマスにブロックがない & 左のマスの1マス下にもブロックがない（床がない）
-
-                // 左下のマスに下がる（足元の同じブロックの違う面の上に立つイメージ）
-                pos = {
-                    (nSquarePos_.x - 1) * stage_->blockSideLength_,
-                    (nSquarePos_.y - 1) * stage_->blockSideLength_,
-                    nSquarePos_.z * stage_->blockSideLength_
-                };
-                railCamera_->SetWorldPosition(pos);
-
-                // TODO: 床に対して向きが変わるようにする
-                // guess: rotation { 0,0,CTR(-90)}
-            }
-        }
-    }
-    if (input_->TriggerKey(DIK_D)) {
-        if (nSquarePos_.x < (stage_->squareLengthX_ - 2) && nSquarePos_.y > 1) { // マス目単位：x < (200 - 2) & y > 1 
-            if (stage_->isFillCubes_[nSquarePos_.z][nSquarePos_.y][nSquarePos_.x + 1] == false &&
-                stage_->isFillCubes_[nSquarePos_.z][nSquarePos_.y - 1][nSquarePos_.x + 1] == true) { // 右のマスにブロックがない & 右のマスの1マス下にブロックがある（床がある）
-
-                // 1マス右に動く
-                pos = {
-                    (nSquarePos_.x + 1) * stage_->blockSideLength_,
-                    nSquarePos_.y * stage_->blockSideLength_,
-                    nSquarePos_.z * stage_->blockSideLength_
-                };
-                railCamera_->SetWorldPosition(pos);
-            }
-            else if (stage_->isFillCubes_[nSquarePos_.z][nSquarePos_.y][nSquarePos_.x + 1] == true) { // 右のマスにブロックがある
-
-                // 座標は変わらない
-                // TODO: 床に対して向きが変わるようにする
-                // guess: rotation { 0,0,CTR(-90) }
-            }
-            else if (stage_->isFillCubes_[nSquarePos_.z][nSquarePos_.y][nSquarePos_.x + 1] == false &&
-                     stage_->isFillCubes_[nSquarePos_.z][nSquarePos_.y - 1][nSquarePos_.x + 1] == false) { // 右のマスにブロックがない & 右のマスの1マス下にもブロックがない（床がない）
-
-                // 左下のマスに下がる（足元の同じブロックの違う面の上に立つイメージ）
-                pos = {
-                    (nSquarePos_.x + 1) * stage_->blockSideLength_,
-                    (nSquarePos_.y - 1) * stage_->blockSideLength_,
-                    nSquarePos_.z * stage_->blockSideLength_
-                };
-                railCamera_->SetWorldPosition(pos);
-
-                // TODO: 床に対して向きが変わるようにする
-                // guess: rotation { 0,0,CTR(-90)}
-            }
-        }
-    }
-#pragma endregion
-
-#ifdef _DEBUG
-    if (input_->TriggerKey(DIK_SPACE)) {
-        pos = {
-            nSquarePos_.x * stage_->blockSideLength_,
-            (nSquarePos_.y + 1) * stage_->blockSideLength_,
-            nSquarePos_.z * stage_->blockSideLength_
-        };
-        railCamera_->SetWorldPosition(pos);
-    }
-    if (input_->TriggerKey(DIK_LSHIFT)) {
-        pos = {
-            nSquarePos_.x * stage_->blockSideLength_,
-            (nSquarePos_.y - 1) * stage_->blockSideLength_,
-            nSquarePos_.z * stage_->blockSideLength_
-        };
-        railCamera_->SetWorldPosition(pos);
-    }
-#endif
+void GameScene::SearchUnderfootBlock()
+{
+    Vector3 checkRot;
+    WorldTransform checkWT;
 }

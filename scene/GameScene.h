@@ -50,6 +50,7 @@ public: // メンバ関数
 
 private:
 	void PlayerMove();
+	void SearchUnderfootBlock();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -63,17 +64,20 @@ private: // メンバ変数
 
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
-	uint32_t reticleHandle_ = 0;
+	uint32_t testPlayerHandle_ = 0;
 	uint32_t testBlockHandle_ = 0;
 
 	ViewProjection viewProjection_;
 	ViewProjection debugViewProjection_;
 
+	// playerModel
+	Model* pModel_ = nullptr;
+
 	//
 	Sprite* sprite_ = nullptr;
 
-	// プレイヤーの座標[マス目]
-	Vector3 nSquarePos_ = { 0,0,0 };
+	// 足元のブロック
+	uint32_t underfootBlock_ = 0;
 
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Skydome> skydome_;

@@ -88,6 +88,11 @@ Vector3& Vector3::operator/=(float s)
 	return *this;
 }
 
+const bool& Vector3::operator==(const Vector3& v1)
+{
+	return x == v1.x && y == v1.y && z == v1.z;
+}
+
 // 2€‰‰Zq +
 const Vector3 operator+(const Vector3& v1, const Vector3& v2)
 {

@@ -9,14 +9,23 @@ Vector3& Calc::DotVecMat(const Vector3 vec3, const Matrix4 worldTransform) {
 	return result;
 }
 
-float& Calc::ConvertToRadian(const int32_t& angle)
+float Calc::ConvertToRadian(const int32_t angle)
 {
-	float result = angle * PI / 180 ;
-	return result;
+	return angle * PI / 180 ;
 }
 
-float& Calc::ConvertToAngle(const int32_t& rad)
+float Calc::ConvertToAngle(const int32_t rad)
+{ 
+	return 180 * rad;
+}
+
+int32_t Calc::TransAngle(const int32_t angle)
 {
-	float result = 180 * rad;
-	return result;
+	return angle + 360;
+}
+
+int32_t Calc::Trans360(const int32_t angle)
+{
+	if (angle == 360)
+		return 0;
 }

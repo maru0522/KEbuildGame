@@ -13,8 +13,12 @@ public: // 静的メンバ変数
 
 public: // メンバ変数
     std::array<std::array<std::array<bool, squareLengthX_>, squareLengthY_>, squareLengthZ_> isFillCubes_{};
+
     // モデル読み込みされたブロックの一辺の長さ
     const float blockSideLength_ = 2.0f;
+
+    // 描画するブロック情報
+    std::vector<Block> blocks_{};
 
 public: // メンバ関数
     void LoadStage(std::string path);
@@ -26,8 +30,7 @@ public: // メンバ関数
     void DrawStage(ViewProjection viewProjection);
 
 private:
-    // ワールドトランスフォーム
-    std::vector<Block> blocks_{};
+    
 
     // ブロックモデル　*デフォルト
     Model* blockModel_ = nullptr;

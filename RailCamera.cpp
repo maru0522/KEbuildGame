@@ -8,7 +8,7 @@ void RailCamera::Initialize(Vector3 pos, Vector3 rad)
     worldTransform_.translation_ = pos;
     worldTransform_.rotation_ = rad;
    
-    worldTransform_.rotation_ = {Calc::ConvertToRadian(10),0,0};
+    //worldTransform_.rotation_.x = Calc::ConvertToRadian(10);
 
     worldTransform_.Initialize();
 
@@ -23,7 +23,7 @@ void RailCamera::Update()
 {
 #pragma region worldTransform
     // ワールドトランスフォームの座標の数値を加算（移動）
-    //Move();
+    Move();
 
     // ワールドトランスフォームの角度の数値を加算（回転）
 
@@ -65,6 +65,9 @@ void RailCamera::Update()
 
     debugText_->SetPos(20, 50);
     debugText_->Printf("cameraPos:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
+    
+    debugText_->SetPos(20, 70);
+    debugText_->Printf("cameraRot:(%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
 #endif
 }
 
@@ -91,48 +94,55 @@ void RailCamera::Move()
     Vector3 move = { 0,0,0 };
 
     // 移動速さ
-    const float kCharacterSpeed = 1.0f;
+    const float kCharacterSpeed = 0.2f;
 
     // 押した方向で移動ベクトルを変更
-    /*if (input_->PushKey(DIK_W)) {
+    if (input_->PushKey(DIK_UPARROW)) {
         move = { 0,0,kCharacterSpeed };
     }
-    if (input_->PushKey(DIK_S)) {
+    if (input_->PushKey(DIK_DOWNARROW)) {
         move = { 0,0,-kCharacterSpeed };
     }
-    if (input_->PushKey(DIK_A)) {
+    if (input_->PushKey(DIK_LEFTARROW)) {
         move = { -kCharacterSpeed,0,0 };
     }
-    if (input_->PushKey(DIK_D)) {
+    if (input_->PushKey(DIK_RIGHTARROW)) {
         move = { kCharacterSpeed,0,0 };
-    }*/
+    }
 
-    // 押した方向で移動ベクトルを変更
-    if (input_->TriggerKey(DIK_W)) {
-        move = { 0,0,kCharacterSpeed };
-    }
-    if (input_->TriggerKey(DIK_S)) {
-        move = { 0,0,-kCharacterSpeed };
-    }
-    if (input_->TriggerKey(DIK_A)) {
-        move = { -kCharacterSpeed,0,0 };
-    }
-    if (input_->TriggerKey(DIK_D)) {
-        move = { kCharacterSpeed,0,0 };
-    }
+    //// 押した方向で移動ベクトルを変更
+    //if (input_->TriggerKey(DIK_W)) {
+    //    move = { 0,0,kCharacterSpeed };
+    //}
+    //if (input_->TriggerKey(DIK_S)) {
+    //    move = { 0,0,-kCharacterSpeed };
+    //}
+    //if (input_->TriggerKey(DIK_A)) {
+    //    move = { -kCharacterSpeed,0,0 };
+    //}
+    //if (input_->TriggerKey(DIK_D)) {
+    //    move = { kCharacterSpeed,0,0 };
+    //}
 #ifdef _DEBUG
-    /*if (input_->PushKey(DIK_SPACE)) {
+    if (input_->PushKey(DIK_NUMPAD8)) {
         move = { 0,kCharacterSpeed,0 };
     }
-    if (input_->PushKey(DIK_LSHIFT)) {
+    if (input_->PushKey(DIK_NUMPAD2)) {
         move = { 0,-kCharacterSpeed,0 };
-    }*/
+    }
 
-    if (input_->TriggerKey(DIK_SPACE)) {
+    /*if (input_->TriggerKey(DIK_SPACE)) {
         move = { 0,kCharacterSpeed,0 };
     }
     if (input_->TriggerKey(DIK_LSHIFT)) {
         move = { 0,-kCharacterSpeed,0 };
+    }*/
+
+    if (input_->TriggerKey(DIK_NUMPAD6)) {
+        worldTransform_.rotation_.y += Calc::ConvertToRadian(45);
+    }
+    if (input_->TriggerKey(DIK_NUMPAD4)) {
+        worldTransform_.rotation_.y -= Calc::ConvertToRadian(45);
     }
 #endif
 
