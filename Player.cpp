@@ -16,11 +16,19 @@ void Player::Initialize(Model* model, uint32_t textureHandle)
     input_ = Input::GetInstance();
     debugText_ = DebugText::GetInstance();
 
-    worldTransform_.translation_ = { 96,90,88 };
-    worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),Calc::ConvertToRadian(90),Calc::ConvertToRadian(-90) };
+    worldTransform_.translation_ = { 88,92,96 };
+    worldTransform_.rotation_ = { Calc::ConvertToRadian(180),Calc::ConvertToRadian(180),Calc::ConvertToRadian(-90) };
     //worldTransform_.rotation_ = { Calc::ConvertToRadian(-10),0,0 };
 
     worldTransform_.Initialize();
+
+    floorDefRot_[0] = {};
+    floorDefRot_[Top] = { Calc::ConvertToRadian(0) ,0, Calc::ConvertToRadian(0) };      // XZ
+    floorDefRot_[Bottom] = { Calc::ConvertToRadian(0) ,0, Calc::ConvertToRadian(180) }; // XZ
+    floorDefRot_[Right] = { 0 ,Calc::ConvertToRadian(0), Calc::ConvertToRadian(-90) };  // YZ
+    floorDefRot_[Left] = { 0 ,Calc::ConvertToRadian(180), Calc::ConvertToRadian(-90) }; // YZ
+    floorDefRot_[Front] = { 0 ,Calc::ConvertToRadian(90), Calc::ConvertToRadian(90) };  // YZ
+    floorDefRot_[Back] = { 0 ,Calc::ConvertToRadian(-90), Calc::ConvertToRadian(90) };  // YZ
 }
 
 void Player::Move()
@@ -47,8 +55,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),Calc::ConvertToRadian(90),Calc::ConvertToRadian(-90) }; // ※徐々に変わるようにする処理に要置換
+                        // Back
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),floorDefRot_[Back].y,floorDefRot_[Back].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x] == false &&
                              stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y - 1][nCubePos_.x] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -61,8 +69,8 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),Calc::ConvertToRadian(90),Calc::ConvertToRadian(90) }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Front
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),floorDefRot_[Front].y, floorDefRot_[Front].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
                 else if (worldRot_ == East) {
@@ -79,8 +87,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),0,Calc::ConvertToRadian(90) }; // ※徐々に変わるようにする処理に要置換
+                        // Left
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),floorDefRot_[Left].y,floorDefRot_[Left].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x + 1] == false &&
                              stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x + 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -93,8 +101,8 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),0,Calc::ConvertToRadian(-90) }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Right
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),floorDefRot_[Right].y,floorDefRot_[Right].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
                 else if (worldRot_ == South) {
@@ -111,8 +119,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),Calc::ConvertToRadian(90),Calc::ConvertToRadian(90) }; // ※徐々に変わるようにする処理に要置換
+                        // Front
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),floorDefRot_[Front].y,floorDefRot_[Front].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x] == false &&
                              stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y - 1][nCubePos_.x] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -125,8 +133,8 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),Calc::ConvertToRadian(-90),Calc::ConvertToRadian(90) }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Back
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),floorDefRot_[Back].y,floorDefRot_[Back].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
                 else if (worldRot_ == West) {
@@ -143,8 +151,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),0,Calc::ConvertToRadian(-90) }; // ※徐々に変わるようにする処理に要置換
+                        // Right
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),floorDefRot_[Right].y,floorDefRot_[Right].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x - 1] == false &&
                              stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x - 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -157,8 +165,8 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),Calc::ConvertToRadian(180),Calc::ConvertToRadian(-90) }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Left
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),floorDefRot_[Left].y,floorDefRot_[Left].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
             }
@@ -177,8 +185,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),Calc::ConvertToRadian(90),Calc::ConvertToRadian(-90) }; // ※徐々に変わるようにする処理に要置換
+                        // Back
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),floorDefRot_[Back].y,floorDefRot_[Back].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x] == false &&
                              stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y + 1][nCubePos_.x] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -191,8 +199,8 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),Calc::ConvertToRadian(90),Calc::ConvertToRadian(90) }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Front
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),floorDefRot_[Front].y,floorDefRot_[Front].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
                 else if (worldRot_ == East) {
@@ -209,8 +217,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),Calc::ConvertToRadian(0),Calc::ConvertToRadian(-90) }; // ※徐々に変わるようにする処理に要置換
+                        // Right
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),floorDefRot_[Right].y,floorDefRot_[Right].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x - 1] == false &&
                              stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x - 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -223,8 +231,8 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(0),Calc::ConvertToRadian(180),Calc::ConvertToRadian(90) }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Left
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),floorDefRot_[Left].y,floorDefRot_[Left].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
                 else if (worldRot_ == South) {
@@ -241,8 +249,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),Calc::ConvertToRadian(90),Calc::ConvertToRadian(90) }; // ※徐々に変わるようにする処理に要置換
+                        // Front
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),floorDefRot_[Front].y,floorDefRot_[Front].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x] == false &&
                              stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y + 1][nCubePos_.x] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -255,8 +263,8 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),Calc::ConvertToRadian(-90),Calc::ConvertToRadian(90) }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Back
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),floorDefRot_[Back].y,floorDefRot_[Back].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
                 else if (worldRot_ == West) {
@@ -273,8 +281,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),Calc::ConvertToRadian(0),Calc::ConvertToRadian(90) }; // ※徐々に変わるようにする処理に要置換
+                        // Left
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(90),floorDefRot_[Left].y,floorDefRot_[Left].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x + 1] == false &&
                              stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x + 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -287,8 +295,268 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),Calc::ConvertToRadian(180),Calc::ConvertToRadian(90) }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Right
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),floorDefRot_[Right].y,floorDefRot_[Right].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                    }
+                }
+            }
+            else if (face_ == Right) {
+                if (worldRot_ == North) {
+                    if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x] == false &&
+                        stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x - 1] == true) { // 正面のマスにブロックがない & 正面のマスの1マス下にブロックがある（床がある）
+
+                        // 1マス進む
+                        nCubePos_.y++;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x] == true) { // 正面のマスにブロックがある
+
+                        // 座標は変わらない
+                        // TODO: 床に対して向きが変わるようにする
+                        // Bottom
+                        worldTransform_.rotation_ = { floorDefRot_[Bottom].x,Calc::ConvertToRadian(90),floorDefRot_[Bottom].z }; // ※徐々に変わるようにする処理に要置換
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x] == false &&
+                             stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x - 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
+
+                        // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
+                        nCubePos_.x--;
+                        nCubePos_.y++;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+
+                        // TODO: 床に対して向きが変わるようにする
+                        // Top
+                        worldTransform_.rotation_ = { floorDefRot_[Top].x,Calc::ConvertToRadian(-90),floorDefRot_[Top].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                    }
+                }
+                else if (worldRot_ == East) {
+                    if (stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x] == false &&
+                        stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x - 1] == true) { // 正面のマスにブロックがない & 正面のマスの1マス下にブロックがある（床がある）
+
+                        // 1マス進む
+                        nCubePos_.z++;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x] == true) { // 正面のマスにブロックがある
+
+                        // 座標は変わらない
+                        // TODO: 床に対して向きが変わるようにする
+                        // Back
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(180),floorDefRot_[Back].y,floorDefRot_[Back].z }; // ※徐々に変わるようにする処理に要置換
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x] == false &&
+                             stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x - 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
+
+                        // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
+                        nCubePos_.x--;
+                        nCubePos_.z++;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+
+                        // TODO: 床に対して向きが変わるようにする
+                        // Front
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(180),floorDefRot_[Front].y,floorDefRot_[Front].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                    }
+                }
+                else if (worldRot_ == South) {
+                    if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x] == false &&
+                        stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x - 1] == true) { // 正面のマスにブロックがない & 正面のマスの1マス下にブロックがある（床がある）
+
+                        // 1マス進む
+                        nCubePos_.y--;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x] == true) { // 正面のマスにブロックがある
+
+                        // 座標は変わらない
+                        // TODO: 床に対して向きが変わるようにする
+                        // Top
+                        worldTransform_.rotation_ = { floorDefRot_[Top].x,Calc::ConvertToRadian(90),floorDefRot_[Top].z }; // ※徐々に変わるようにする処理に要置換
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x] == false &&
+                             stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x - 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
+
+                        // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
+                        nCubePos_.x--;
+                        nCubePos_.y--;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+
+                        // TODO: 床に対して向きが変わるようにする
+                        // Bottom
+                        worldTransform_.rotation_ = { floorDefRot_[Bottom].x,Calc::ConvertToRadian(-90),floorDefRot_[Bottom].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                    }
+                }
+                else if (worldRot_ == West) {
+                    if (stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x] == false &&
+                        stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x - 1] == true) { // 正面のマスにブロックがない & 正面のマスの1マス下にブロックがある（床がある）
+
+                        // 1マス進む
+                        nCubePos_.z--;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x] == true) { // 正面のマスにブロックがある
+
+                        // 座標は変わらない
+                        // TODO: 床に対して向きが変わるようにする
+                        // Front
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(0),floorDefRot_[Front].y,floorDefRot_[Front].z }; // ※徐々に変わるようにする処理に要置換
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x] == false &&
+                             stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x - 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
+
+                        // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
+                        nCubePos_.x--;
+                        nCubePos_.z--;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+
+                        // TODO: 床に対して向きが変わるようにする
+                        // Back
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(0),floorDefRot_[Back].y,floorDefRot_[Back].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                    }
+                }
+            }
+            else if (face_ == Left) {
+                if (worldRot_ == North) {
+                    if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x] == false &&
+                        stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x + 1] == true) { // 正面のマスにブロックがない & 正面のマスの1マス下にブロックがある（床がある）
+
+                        // 1マス進む
+                        nCubePos_.y++;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x] == true) { // 正面のマスにブロックがある
+
+                        // 座標は変わらない
+                        // TODO: 床に対して向きが変わるようにする
+                        // Bottom
+                        worldTransform_.rotation_ = { floorDefRot_[Bottom].x,Calc::ConvertToRadian(-90),floorDefRot_[Bottom].z }; // ※徐々に変わるようにする処理に要置換
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x] == false &&
+                             stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x + 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
+
+                        // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
+                        nCubePos_.x++;
+                        nCubePos_.y++;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+
+                        // TODO: 床に対して向きが変わるようにする
+                        // Top
+                        worldTransform_.rotation_ = { floorDefRot_[Top].x,Calc::ConvertToRadian(90),floorDefRot_[Top].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                    }
+                }
+                else if (worldRot_ == East) {
+                    if (stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x] == false &&
+                        stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x + 1] == true) { // 正面のマスにブロックがない & 正面のマスの1マス下にブロックがある（床がある）
+
+                        // 1マス進む
+                        nCubePos_.z--;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x] == true) { // 正面のマスにブロックがある
+
+                        // 座標は変わらない
+                        // TODO: 床に対して向きが変わるようにする
+                        // Front
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(180),floorDefRot_[Front].y,floorDefRot_[Front].z }; // ※徐々に変わるようにする処理に要置換
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x] == false &&
+                             stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x + 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
+
+                        // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
+                        nCubePos_.x++;
+                        nCubePos_.z--;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+
+                        // TODO: 床に対して向きが変わるようにする
+                        // Back
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(180),floorDefRot_[Back].y,floorDefRot_[Back].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                    }
+                }
+                else if (worldRot_ == South) {
+                    if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x] == false &&
+                        stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x + 1] == true) { // 正面のマスにブロックがない & 正面のマスの1マス下にブロックがある（床がある）
+
+                        // 1マス進む
+                        nCubePos_.y--;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x] == true) { // 正面のマスにブロックがある
+
+                        // 座標は変わらない
+                        // TODO: 床に対して向きが変わるようにする
+                        // Top
+                        worldTransform_.rotation_ = { floorDefRot_[Top].x,Calc::ConvertToRadian(-90),floorDefRot_[Top].z }; // ※徐々に変わるようにする処理に要置換
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x] == false &&
+                             stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x + 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
+
+                        // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
+                        nCubePos_.x++;
+                        nCubePos_.y--;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+
+                        // TODO: 床に対して向きが変わるようにする
+                        // Bottom
+                        worldTransform_.rotation_ = { floorDefRot_[Bottom].x,Calc::ConvertToRadian(90),floorDefRot_[Bottom].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                    }
+                }
+                else if (worldRot_ == West) {
+                    if (stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x] == false &&
+                        stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x + 1] == true) { // 正面のマスにブロックがない & 正面のマスの1マス下にブロックがある（床がある）
+
+                        // 1マス進む
+                        nCubePos_.z++;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x] == true) { // 正面のマスにブロックがある
+
+                        // 座標は変わらない
+                        // TODO: 床に対して向きが変わるようにする
+                        // Back
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(0),floorDefRot_[Back].y,floorDefRot_[Back].z }; // ※徐々に変わるようにする処理に要置換
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x] == false &&
+                             stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x + 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
+
+                        // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
+                        nCubePos_.x++;
+                        nCubePos_.z++;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+
+                        // TODO: 床に対して向きが変わるようにする
+                        // Front
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(0),floorDefRot_[Front].y,floorDefRot_[Front].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
             }
@@ -307,8 +575,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { 0,0,Calc::ConvertToRadian(180) }; // ※徐々に変わるようにする処理に要置換
+                        // Bottom
+                        worldTransform_.rotation_ = { floorDefRot_[Bottom].x,0,floorDefRot_[Bottom].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x] == false &&
                              stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y + 1][nCubePos_.x] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -321,8 +589,8 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { 0,Calc::ConvertToRadian(180),0 }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Top
+                        worldTransform_.rotation_ = { floorDefRot_[Top].x,Calc::ConvertToRadian(180),floorDefRot_[Top].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
                 else if (worldRot_ == East) {
@@ -339,8 +607,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { 0,0,Calc::ConvertToRadian(-90) }; // ※徐々に変わるようにする処理に要置換
+                        // Right
+                        worldTransform_.rotation_ = { 0,floorDefRot_[Right].y,floorDefRot_[Right].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x - 1] == false &&
                              stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x - 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -353,8 +621,8 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { 0,Calc::ConvertToRadian(180),Calc::ConvertToRadian(-90) }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Left
+                        worldTransform_.rotation_ = { 0,floorDefRot_[Left].y,floorDefRot_[Left].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
                 else if (worldRot_ == South) {
@@ -371,8 +639,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { 0,0,0 }; // ※徐々に変わるようにする処理に要置換
+                        // Top
+                        worldTransform_.rotation_ = { floorDefRot_[Top].x,0,floorDefRot_[Top].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x] == false &&
                              stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y - 1][nCubePos_.x] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -385,8 +653,8 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { 0,Calc::ConvertToRadian(180),Calc::ConvertToRadian(180) }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Bottom
+                        worldTransform_.rotation_ = { floorDefRot_[Bottom].x,Calc::ConvertToRadian(180),floorDefRot_[Bottom].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
                 else if (worldRot_ == West) {
@@ -403,11 +671,11 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { 0,Calc::ConvertToRadian(180),Calc::ConvertToRadian(-90) }; // ※徐々に変わるようにする処理に要置換
+                        // Left
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(180),floorDefRot_[Left].y,floorDefRot_[Left].z }; // ※徐々に変わるようにする処理に要置換
                     }
-                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x - 1] == false &&
-                             stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x - 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x + 1] == false &&
+                             stage_->isFillCubes_[nCubePos_.z - 1][nCubePos_.y][nCubePos_.x + 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
 
                         // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
                         nCubePos_.x++;
@@ -417,8 +685,8 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { 0,Calc::ConvertToRadian(180),Calc::ConvertToRadian(90) }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Right
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(180),floorDefRot_[Right].y,floorDefRot_[Right].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
             }
@@ -437,8 +705,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(-90),Calc::ConvertToRadian(-90),Calc::ConvertToRadian(90) }; // ※徐々に変わるようにする処理に要置換
+                        // Bottom
+                        worldTransform_.rotation_ = { floorDefRot_[Bottom].x,Calc::ConvertToRadian(180),floorDefRot_[Bottom].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y + 1][nCubePos_.x] == false &&
                              stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y + 1][nCubePos_.x] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -451,8 +719,40 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { 0,0,0 }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Top
+                        worldTransform_.rotation_ = { floorDefRot_[Top].x,0,floorDefRot_[Top].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                    }
+                }
+                else if (worldRot_ == East) {
+                    if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x + 1] == false &&
+                        stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x + 1] == true) { // 正面のマスにブロックがない & 正面のマスの1マス下にブロックがある（床がある）
+
+                        // 1マス進む
+                        nCubePos_.x++;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x + 1] == true) { // 正面のマスにブロックがある
+
+                        // 座標は変わらない
+                        // TODO: 床に対して向きが変わるようにする
+                        // Left
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(0),floorDefRot_[Left].y,floorDefRot_[Left].z }; // ※徐々に変わるようにする処理に要置換
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x + 1] == false &&
+                             stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x + 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
+
+                        // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
+                        nCubePos_.x++;
+                        nCubePos_.z++;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+
+                        // TODO: 床に対して向きが変わるようにする
+                        // Right
+                        worldTransform_.rotation_ = { 0,floorDefRot_[Right].y,floorDefRot_[Right].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
                 else if (worldRot_ == South) {
@@ -469,8 +769,8 @@ void Player::Move()
 
                         // 座標は変わらない
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して-90度回転 ※後に270度に置換
-                        worldTransform_.rotation_ = { Calc::ConvertToRadian(0),Calc::ConvertToRadian(180),Calc::ConvertToRadian(0) }; // ※徐々に変わるようにする処理に要置換
+                        // Top
+                        worldTransform_.rotation_ = { floorDefRot_[Top].x,Calc::ConvertToRadian(180),floorDefRot_[Top].z }; // ※徐々に変わるようにする処理に要置換
                     }
                     else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y - 1][nCubePos_.x] == false &&
                              stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y - 1][nCubePos_.x] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
@@ -483,8 +783,40 @@ void Player::Move()
                         worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
 
                         // TODO: 床に対して向きが変わるようにする
-                        // X軸に対して90度回転 
-                        worldTransform_.rotation_ = { 0,0,0 }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                        // Bottom
+                        worldTransform_.rotation_ = { floorDefRot_[Bottom].x,0,floorDefRot_[Bottom].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
+                    }
+                }
+                else if (worldRot_ == West) {
+                    if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x - 1] == false &&
+                        stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x - 1] == true) { // 正面のマスにブロックがない & 正面のマスの1マス下にブロックがある（床がある）
+
+                        // 1マス進む
+                        nCubePos_.x--;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x - 1] == true) { // 正面のマスにブロックがある
+
+                        // 座標は変わらない
+                        // TODO: 床に対して向きが変わるようにする
+                        // Right
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(180),floorDefRot_[Right].y,floorDefRot_[Right].z }; // ※徐々に変わるようにする処理に要置換
+                    }
+                    else if (stage_->isFillCubes_[nCubePos_.z][nCubePos_.y][nCubePos_.x - 1] == false &&
+                             stage_->isFillCubes_[nCubePos_.z + 1][nCubePos_.y][nCubePos_.x - 1] == false) { // 正面のマスにブロックがない & 正面のマスの1マス下にもブロックがない（床がない）
+
+                        // 正面斜め下のマスに進む（足元の同じブロックの違う面の上に立つイメージ）
+                        nCubePos_.x--;
+                        nCubePos_.z++;
+                        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+                        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+                        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+
+                        // TODO: 床に対して向きが変わるようにする
+                        // Left
+                        worldTransform_.rotation_ = { Calc::ConvertToRadian(180),floorDefRot_[Left].y,floorDefRot_[Left].z }; // メモ写真の青5位置 ※徐々に変わるようにする処理に要置換
                     }
                 }
             }
@@ -547,35 +879,56 @@ void Player::Move()
 void Player::OnFace()
 {
     // TOP
-    if (worldTransform_.rotation_.x == 0 && worldTransform_.rotation_.z == 0 ||
-        worldTransform_.rotation_.x == Calc::ConvertToRadian(180) && worldTransform_.rotation_.z == Calc::ConvertToRadian(180)) {
+    if (worldTransform_.rotation_.x == floorDefRot_[Top].x && worldTransform_.rotation_.z == floorDefRot_[Top].z) {
         face_ = Top;
     }
     // BOTTOM
-    else if (worldTransform_.rotation_.x == 0 && worldTransform_.rotation_.z == Calc::ConvertToRadian(180) ||
-             worldTransform_.rotation_.x == Calc::ConvertToRadian(180) && worldTransform_.rotation_.z == 0) {
+    else if (worldTransform_.rotation_.x == floorDefRot_[Bottom].x && worldTransform_.rotation_.z == floorDefRot_[Bottom].z) {
         face_ = Bottom;
     }
     // RIGHT
-    else if (worldTransform_.rotation_.y == 0 && worldTransform_.rotation_.z == Calc::ConvertToRadian(-90) ||
-             worldTransform_.rotation_.y == Calc::ConvertToRadian(180) && worldTransform_.rotation_.z == Calc::ConvertToRadian(90)) {
+    else if (worldTransform_.rotation_.y == floorDefRot_[Right].y && worldTransform_.rotation_.z == floorDefRot_[Right].z) {
         face_ = Right;
     }
     // Left
-    else if (worldTransform_.rotation_.y == 0 && worldTransform_.rotation_.z == Calc::ConvertToRadian(90) ||
-             worldTransform_.rotation_.y == Calc::ConvertToRadian(180) && worldTransform_.rotation_.z == Calc::ConvertToRadian(-90)) {
+    else if (worldTransform_.rotation_.y == floorDefRot_[Left].y && worldTransform_.rotation_.z == floorDefRot_[Left].z) {
         face_ = Left;
     }
     // Front
-    else if (worldTransform_.rotation_.y == Calc::ConvertToRadian(90) && worldTransform_.rotation_.z == Calc::ConvertToRadian(90) ||
-             worldTransform_.rotation_.y == Calc::ConvertToRadian(-90) && worldTransform_.rotation_.z == Calc::ConvertToRadian(-90)) {
+    else if (worldTransform_.rotation_.y == floorDefRot_[Front].y && worldTransform_.rotation_.z == floorDefRot_[Front].z) {
         face_ = Front;
     }
     // Back
-    else if (worldTransform_.rotation_.y == Calc::ConvertToRadian(-90) && worldTransform_.rotation_.z == Calc::ConvertToRadian(90) ||
-             worldTransform_.rotation_.y == Calc::ConvertToRadian(90) && worldTransform_.rotation_.z == Calc::ConvertToRadian(-90)) {
+    else if (worldTransform_.rotation_.y == floorDefRot_[Back].y && worldTransform_.rotation_.z == floorDefRot_[Back].z) {
         face_ = Back;
     }
+#ifdef _DEBUG
+    // TOP
+    if (worldTransform_.rotation_.x == Calc::ConvertToRadian(180) && worldTransform_.rotation_.z == Calc::ConvertToRadian(180)) {
+        face_ = 99;
+    }
+    // BOTTOM
+    else if (worldTransform_.rotation_.x == Calc::ConvertToRadian(180) && worldTransform_.rotation_.z == 0) {
+        face_ = 99;
+    }
+    // RIGHT
+    else if (worldTransform_.rotation_.y == Calc::ConvertToRadian(180) && worldTransform_.rotation_.z == Calc::ConvertToRadian(90)) {
+        face_ = 99;
+    }
+    // Left
+    else if (worldTransform_.rotation_.y == 0 && worldTransform_.rotation_.z == Calc::ConvertToRadian(90)) {
+        face_ = 99;
+    }
+    // Front
+    else if (worldTransform_.rotation_.y == Calc::ConvertToRadian(-90) && worldTransform_.rotation_.z == Calc::ConvertToRadian(-90)) {
+        face_ = 99;
+    }
+    // Back
+    else if (worldTransform_.rotation_.y == Calc::ConvertToRadian(90) && worldTransform_.rotation_.z == Calc::ConvertToRadian(-90)) {
+        face_ = 99;
+    }
+#endif
+
 }
 
 void Player::OnDirection()
@@ -595,16 +948,44 @@ void Player::OnDirection()
         }
     }
     else if (face_ == Bottom) {
-        if (worldTransform_.rotation_.y == Calc::ConvertToRadian(180)) {
+        if (worldTransform_.rotation_.y == 0) {
             worldRot_ = North;
         }
-        if (worldTransform_.rotation_.y == Calc::ConvertToRadian(90)) {
+        if (worldTransform_.rotation_.y == Calc::ConvertToRadian(-90) || worldTransform_.rotation_.y == Calc::ConvertToRadian(270)) {
             worldRot_ = East;
         }
-        if (worldTransform_.rotation_.y == 0) {
+        if (worldTransform_.rotation_.y == Calc::ConvertToRadian(180)) {
             worldRot_ = South;
         }
-        if (worldTransform_.rotation_.y == Calc::ConvertToRadian(-90) || worldTransform_.rotation_.y == Calc::ConvertToRadian(270)) {
+        if (worldTransform_.rotation_.y == Calc::ConvertToRadian(90)) {
+            worldRot_ = West;
+        }
+    }
+    else if (face_ == Right) {
+        if (worldTransform_.rotation_.x == Calc::ConvertToRadian(-90) || worldTransform_.rotation_.x == Calc::ConvertToRadian(270)) {
+            worldRot_ = North;
+        }
+        if (worldTransform_.rotation_.x == 0) {
+            worldRot_ = East;
+        }
+        if (worldTransform_.rotation_.x == Calc::ConvertToRadian(90)) {
+            worldRot_ = South;
+        }
+        if (worldTransform_.rotation_.x == Calc::ConvertToRadian(180)) {
+            worldRot_ = West;
+        }
+    }
+    else if (face_ == Left) {
+        if (worldTransform_.rotation_.x == Calc::ConvertToRadian(-90) || worldTransform_.rotation_.x == Calc::ConvertToRadian(270)) {
+            worldRot_ = North;
+        }
+        if (worldTransform_.rotation_.x == 0) {
+            worldRot_ = East;
+        }
+        if (worldTransform_.rotation_.x == Calc::ConvertToRadian(90)) {
+            worldRot_ = South;
+        }
+        if (worldTransform_.rotation_.x == Calc::ConvertToRadian(180)) {
             worldRot_ = West;
         }
     }
@@ -636,7 +1017,6 @@ void Player::OnDirection()
             worldRot_ = West;
         }
     }
-
 }
 
 //void Player::Rotate()
@@ -683,10 +1063,49 @@ void Player::Update()
                        worldTransform_.rotation_.x,
                        worldTransform_.rotation_.y,
                        worldTransform_.rotation_.z);
+#pragma region face
     debugText_->SetPos(60, 190);
-    debugText_->Printf("playerOnFace:(%d)", face_);
+    if (face_ == Top) {
+        debugText_->Printf("playerOnFace:(Top)");
+    }
+    else if (face_ == Bottom) {
+        debugText_->Printf("playerOnFace:(Bottom)");
+    }
+    else if (face_ == Right) {
+        debugText_->Printf("playerOnFace:(Right)");
+    }
+    else if (face_ == Left) {
+        debugText_->Printf("playerOnFace:(Left)");
+    }
+    else if (face_ == Front) {
+        debugText_->Printf("playerOnFace:(Front)");
+    }
+    else if (face_ == Back) {
+        debugText_->Printf("playerOnFace:(Back)");
+    }
+    else if (face_ == 99) {
+        debugText_->Printf("playerOnFace:(error.this Rot isnt setting at DefRot)");
+    }
+#pragma endregion
+#pragma region Direction
     debugText_->SetPos(60, 210);
-    debugText_->Printf("OnDirection:(%d)", worldRot_);
+    if (worldRot_ == North) {
+        debugText_->Printf("OnDirection:(North)");
+    }
+    else if (worldRot_ == East) {
+        debugText_->Printf("OnDirection:(East)");
+    }
+    else if (worldRot_ == South) {
+        debugText_->Printf("OnDirection:(South)");
+    }
+    else if (worldRot_ == West) {
+        debugText_->Printf("OnDirection:(West)");
+    }
+#pragma endregion
+    debugText_->SetPos(100, 230);
+    debugText_->Printf("nCubePos:(%f,%f,%f)", nCubePos_.x, nCubePos_.x, nCubePos_.x);
+    debugText_->SetPos(100, 250);
+    debugText_->Printf("key_w:(%d)", input_->PushKey(DIK_W));
 #endif
 
     // 移動

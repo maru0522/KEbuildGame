@@ -64,6 +64,8 @@ private:
 
 	uint32_t worldRot_ = 0;
 
+	std::array<Vector3, 7> floorDefRot_;
+
 	// モデル
 	Model* model_ = nullptr;
 	// テクスチャハンドル
