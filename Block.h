@@ -8,6 +8,7 @@
 
 enum blockID {
     FLOOR = 1,
+    WoodBox,
     MEMORY,
     GOAL
 };
@@ -32,7 +33,7 @@ private:
     Model* model_ = nullptr;
 
     // テクスチャハンドルの配列
-    std::array<uint32_t, 3> textures_ = {};
+    std::array<uint32_t, 4> textures_ = {};
 
     // ブロックID
     uint32_t indexBlock_ = 0;

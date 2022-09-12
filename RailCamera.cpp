@@ -144,6 +144,13 @@ void RailCamera::Move()
     if (input_->TriggerKey(DIK_NUMPAD4)) {
         worldTransform_.rotation_.y -= Calc::ConvertToRadian(45);
     }
+
+    if (input_->TriggerKey(DIK_NUMPAD9)) {
+        worldTransform_.rotation_.x += Calc::ConvertToRadian(45);
+    }
+    if (input_->TriggerKey(DIK_NUMPAD3)) {
+        worldTransform_.rotation_.x -= Calc::ConvertToRadian(45);
+    }
 #endif
 
     worldTransform_.translation_.x += move.x;

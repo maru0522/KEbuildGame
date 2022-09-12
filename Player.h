@@ -36,6 +36,8 @@ public:
 	void OnFace();
 	// どの方向。
 	void OnDirection();
+	// 何の種類のブロックの上に立っているか
+	void OnBlock();
 
 	// 軸回転
 	/*void Rotate();*/
@@ -47,13 +49,21 @@ public:
 	// 描画
 	void Draw(ViewProjection viewProjection);
 
+	// プレイヤーの変数初期化
+	void Reset();
+
 	// 衝突を検出したら呼びだされるコールバック関数
 	//void OnCollision();
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+	uint32_t GetUnderBlockId() { return underfootBlockId_; }
+
+	WorldTransform& GetWorldTransform() { return worldTransform_; }
+
 	void SetParent(WorldTransform* worldTransform) { worldTransform_.parent_ = worldTransform; }
+	void SetPos(Vector3 pos) { worldTransform_.translation_ = pos; }
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -66,6 +76,8 @@ private:
 
 	std::array<Vector3, 7> floorDefRot_;
 
+	uint32_t underfootBlockId_ = 0;
+
 	// モデル
 	Model* model_ = nullptr;
 	// テクスチャハンドル
@@ -75,5 +87,4 @@ private:
 
 	Input* input_ = nullptr;
 	DebugText* debugText_ = nullptr;
-
 };

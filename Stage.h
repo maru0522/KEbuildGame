@@ -29,6 +29,8 @@ public: // ƒƒ“ƒoŠÖ”
 
     void DrawStage(ViewProjection viewProjection);
 
+    void Reset();
+
 private:
     
 

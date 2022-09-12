@@ -67,6 +67,21 @@ void Stage::DrawStage(ViewProjection viewProjection)
     }
 }
 
+void Stage::Reset()
+{
+    // isFillCubes_‚Ì‰Šú‰»
+    for (int z = 0; z < squareLengthZ_; z++) {
+        for (int y = 0; y < squareLengthY_; y++) {
+            for (int x = 0; x < squareLengthX_; x++) {
+                isFillCubes_[z][y][x] = false;
+            }
+        }
+    }
+
+    // blocks_‚Ì‰Šú‰»
+    blocks_.clear();
+}
+
 Stage stage_;
 Stage* GetInstanceStage()
 {

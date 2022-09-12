@@ -17,6 +17,16 @@
 #include "RailCamera.h"
 #include <sstream>
 #include "Stage.h"
+#include "Object.h"
+
+
+enum Scene {
+	Title,			// 0
+	GuidQuestion,	// 1
+	Tutorial,		// 2
+	SelectStage,	// 3
+	PlayGame		// 4
+};
 
 /// <summary>
 /// ゲームシーン
@@ -66,25 +76,78 @@ private: // メンバ変数
 	uint32_t textureHandle_ = 0;
 	uint32_t testPlayerHandle_ = 0;
 	uint32_t testBlockHandle_ = 0;
+	/*uint32_t texArrowHandle_ = 0;*/
+	uint32_t texGear8Handle_ = 0;
+	uint32_t texGear12Handle_ = 0;
+	uint32_t texGear16Handle_ = 0;
+
+	// 文字テクスチャハンドル
+	uint32_t texRIPTAHandle_ = 0;
+	uint32_t texPRESSSPACEHandle_ = 0;
+	uint32_t texYESHandle_ = 0;
+	uint32_t texNOHandle_ = 0;
+	uint32_t texPLAYTUTORIALHandle_ = 0;
+
 
 	ViewProjection viewProjection_;
 	ViewProjection debugViewProjection_;
 
 	// playerModel
 	Model* pModel_ = nullptr;
+	// arrowModel
+	/*Model* arrowModel_ = nullptr;*/
+	// Gear_8Model
+	Model* gear8Model_ = nullptr;
+	// Gear_12Model
+	Model* gear12Model_ = nullptr;
+	// Gear_16Model
+	Model* gear16Model_ = nullptr;
+
+	// 文字Model
+	Model* RIPTAModel_ = nullptr;
+	Model* PRESSSPACEModel_ = nullptr;
+	Model* YESModel_ = nullptr;
+	Model* NOModel_ = nullptr;
+	Model* PLAYTUTORIALModel_ = nullptr;
+
 
 	//
 	Sprite* sprite_ = nullptr;
 
-	// 足元のブロック
-	uint32_t underfootBlock_ = 0;
 
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Skydome> skydome_;
 	std::unique_ptr<RailCamera> railCamera_;
 
+	// オブジェクト
+	/*std::unique_ptr<Object> arrow_;*/
+	std::unique_ptr<Object> gear8_;
+	std::unique_ptr<Object> gear12_;
+	std::unique_ptr<Object> gear16_;
+
+	// 文字
+	std::unique_ptr<Object> RIPTA_;
+	std::unique_ptr<Object> RIPTAGear16L_;
+	std::unique_ptr<Object> RIPTAGear16R_;
+	std::unique_ptr<Object> PRESSSPACE_;
+	std::unique_ptr<Object> YES_;
+	std::unique_ptr<Object> NO_;
+	std::unique_ptr<Object> YESGear12_;
+	std::unique_ptr<Object> NOGear12_;
+	std::unique_ptr<Object> PLAYTUTORIAL_;
+
+
 	// 3Dモデル
 	Model* modelSkyDome_ = nullptr;
+
+	// 足元のブロック
+	uint32_t underfootBlock_ = 0;
+
+	// ゲームシーン
+	uint32_t gameScene_ = 0;
+
+	// Select
+	bool isPlayTutorial = true;
 
 	/// <summary>
 	/// ゲームシーン用
