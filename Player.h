@@ -25,13 +25,20 @@ enum Direction {
 	West		// 4
 };
 
+enum Mode {
+	Learn,		// 0
+	Repeat		// 1
+};
+
 class Player
 {
 public:
 	// 初期化
-	void Initialize(Model* model, uint32_t textureHandle);
+	void Initialize(Model* model, uint32_t textureHandle, uint32_t textureHandle2);
 	// 移動
 	void Move();
+	// isRepeatがRepeat(true)の時用の移動関数
+	void RepeatMove();
 	// どの面の上に立っているか判断
 	void OnFace();
 	// どの方向。
@@ -61,9 +68,14 @@ public:
 	uint32_t GetUnderBlockId() { return underfootBlockId_; }
 
 	WorldTransform& GetWorldTransform() { return worldTransform_; }
+	WorldTransform* GetWorldTransform2() { return &worldTransform_; }
+
+	bool& GetIsRepeat() { return isRepeat_; }
 
 	void SetParent(WorldTransform* worldTransform) { worldTransform_.parent_ = worldTransform; }
 	void SetPos(Vector3 pos) { worldTransform_.translation_ = pos; }
+	void SetIsRepeat(bool isRepeat) { isRepeat_ = isRepeat; }
+	void SetActionRemain(uint32_t index) { indexMoveActionRemain_ = index; }
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -76,12 +88,21 @@ private:
 
 	std::array<Vector3, 7> floorDefRot_;
 
-	uint32_t underfootBlockId_ = 0;
+	uint32_t underfootBlockId_ = MEMORY;
+
+	uint32_t indexMoveActionRemain_ = 0;
+	bool isRepeat_ = Learn;
+	std::vector<char> keyMemory_;
+	uint32_t indexVecRef_ = 0;
+	uint32_t fpsCount_ = 0;
+
+	uint32_t speedRepeat_ = 70;
 
 	// モデル
 	Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+	uint32_t textureHandle2_ = 0u;
 
 	Stage* stage_ = nullptr;
 

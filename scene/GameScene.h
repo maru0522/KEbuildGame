@@ -18,6 +18,7 @@
 #include <sstream>
 #include "Stage.h"
 #include "Object.h"
+#include "FPSCamera.h"
 
 
 enum Scene {
@@ -26,6 +27,11 @@ enum Scene {
 	Tutorial,		// 2
 	SelectStage,	// 3
 	PlayGame		// 4
+};
+
+enum Camera {
+	Rail,
+	FPS
 };
 
 /// <summary>
@@ -75,8 +81,9 @@ private: // メンバ変数
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 	uint32_t testPlayerHandle_ = 0;
+	uint32_t testPlayerHandle2_ = 0;
 	uint32_t testBlockHandle_ = 0;
-	/*uint32_t texArrowHandle_ = 0;*/
+	uint32_t texArrowHandle_ = 0;
 	uint32_t texGear8Handle_ = 0;
 	uint32_t texGear12Handle_ = 0;
 	uint32_t texGear16Handle_ = 0;
@@ -87,6 +94,7 @@ private: // メンバ変数
 	uint32_t texYESHandle_ = 0;
 	uint32_t texNOHandle_ = 0;
 	uint32_t texPLAYTUTORIALHandle_ = 0;
+	uint32_t texWASDHandle_ = 0;
 
 
 	ViewProjection viewProjection_;
@@ -95,7 +103,7 @@ private: // メンバ変数
 	// playerModel
 	Model* pModel_ = nullptr;
 	// arrowModel
-	/*Model* arrowModel_ = nullptr;*/
+	Model* arrowModel_ = nullptr;
 	// Gear_8Model
 	Model* gear8Model_ = nullptr;
 	// Gear_12Model
@@ -109,6 +117,10 @@ private: // メンバ変数
 	Model* YESModel_ = nullptr;
 	Model* NOModel_ = nullptr;
 	Model* PLAYTUTORIALModel_ = nullptr;
+	Model* WModel_ = nullptr;
+	Model* SModel_ = nullptr;
+	Model* AModel_ = nullptr;
+	Model* DModel_ = nullptr;
 
 
 	//
@@ -118,9 +130,11 @@ private: // メンバ変数
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Skydome> skydome_;
 	std::unique_ptr<RailCamera> railCamera_;
+	std::unique_ptr<FPSCamera> fpsCamera_;
 
 	// オブジェクト
-	/*std::unique_ptr<Object> arrow_;*/
+	std::unique_ptr<Object> arrowUp_;
+	std::unique_ptr<Object> arrowDown_;
 	std::unique_ptr<Object> gear8_;
 	std::unique_ptr<Object> gear12_;
 	std::unique_ptr<Object> gear16_;
@@ -135,10 +149,18 @@ private: // メンバ変数
 	std::unique_ptr<Object> YESGear12_;
 	std::unique_ptr<Object> NOGear12_;
 	std::unique_ptr<Object> PLAYTUTORIAL_;
+	std::unique_ptr<Object> W_;
+	std::unique_ptr<Object> S_;
+	std::unique_ptr<Object> A_;
+	std::unique_ptr<Object> D_;
 
 
 	// 3Dモデル
 	Model* modelSkyDome_ = nullptr;
+
+
+	// カメラ
+	uint32_t indexCamera_ = Rail;
 
 	// 足元のブロック
 	uint32_t underfootBlock_ = 0;

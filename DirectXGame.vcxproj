@@ -103,6 +103,7 @@
     <ClCompile Include="Calc.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
+    <ClCompile Include="FPSCamera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="Calc.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyBullet.h" />
+    <ClInclude Include="FPSCamera.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="math\MathUtility.h" />
     <ClInclude Include="math\Matrix4.h" />

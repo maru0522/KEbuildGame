@@ -13,7 +13,7 @@ GameScene::~GameScene() {
     delete debugCamera_;
     delete modelSkyDome_;
     delete pModel_;
-    /*delete arrowModel_;*/
+    delete arrowModel_;
     delete gear8Model_;
     delete gear12Model_;
     delete gear16Model_;
@@ -24,6 +24,7 @@ GameScene::~GameScene() {
     delete YESModel_;
     delete NOModel_;
     delete PLAYTUTORIALModel_;
+    delete WModel_;
 }
 
 void GameScene::Initialize() {
@@ -38,7 +39,7 @@ void GameScene::Initialize() {
     // playerModel
     pModel_ = Model::CreateFromOBJ("player");
     // arrow
-    /*arrowModel_ = Model::CreateFromOBJ("arrow");*/
+    arrowModel_ = Model::CreateFromOBJ("arrow");
     // gear8
     gear8Model_ = Model::CreateFromOBJ("Gear");
     // gear12
@@ -52,14 +53,19 @@ void GameScene::Initialize() {
     YESModel_ = Model::CreateFromOBJ("YES");
     NOModel_ = Model::CreateFromOBJ("NO");
     PLAYTUTORIALModel_ = Model::CreateFromOBJ("PLAYTUTORIAL");
+    WModel_ = Model::CreateFromOBJ("W");
+    SModel_ = Model::CreateFromOBJ("S");
+    AModel_ = Model::CreateFromOBJ("A");
+    DModel_ = Model::CreateFromOBJ("D");
 
 
 
     //ファイル名を指定してテクスチャを読み込む
     textureHandle_ = TextureManager::Load("Task1_2Resources/player.png");
-    testPlayerHandle_ = TextureManager::Load("player/Player_BakeTexture.png");
+    testPlayerHandle_ = TextureManager::Load("player/Player_BakeTexture_Green.png");
+    testPlayerHandle2_ = TextureManager::Load("player/Player_BakeTexture_Red.png");
     testBlockHandle_ = TextureManager::Load("Task1_2Resources/bullet.png");
-    /*texArrowHandle_ = TextureManager::Load("arrow/Brass.png");*/
+    texArrowHandle_ = TextureManager::Load("W/WASD.png");
     texGear8Handle_ = TextureManager::Load("Gear/Gear.png");
     texGear12Handle_ = TextureManager::Load("Gear_12/Gear_12.png");
     texGear16Handle_ = TextureManager::Load("Gear_16/Gear_16.png");
@@ -70,6 +76,7 @@ void GameScene::Initialize() {
     texYESHandle_ = TextureManager::Load("YES/YES.png");
     texNOHandle_ = TextureManager::Load("NO/NO.png");
     texPLAYTUTORIALHandle_ = TextureManager::Load("PLAYTUTORIAL/PLAYTUTORIAL.png");
+    texWASDHandle_ = TextureManager::Load("W/WASD.png");
 
 
     //デバックカメラの生成
@@ -84,6 +91,13 @@ void GameScene::Initialize() {
     //ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
     PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
+    // 自キャラの生成
+    player_ = std::make_unique<Player>();
+    // 自キャラの初期化
+    player_->Initialize(pModel_, testPlayerHandle_, testPlayerHandle2_);
+    player_->SetActionRemain(100);
+    //player_->SetParent(railCamera_->GetWorldTransform());
+
     // レールカメラの生成
     railCamera_ = std::make_unique<RailCamera>();
     Vector3 pos(90, 90, 90);
@@ -91,11 +105,12 @@ void GameScene::Initialize() {
     // レールカメラの初期化
     railCamera_->Initialize(pos, rad);
 
-    // 自キャラの生成
-    player_ = std::make_unique<Player>();
-    // 自キャラの初期化
-    player_->Initialize(pModel_, testPlayerHandle_);
-    //player_->SetParent(railCamera_->GetWorldTransform());
+    // fpsカメラの生成
+    fpsCamera_ = std::make_unique<FPSCamera>();
+    // fpsカメラの初期化
+    fpsCamera_->Initialize(player_->GetWorldTransform().translation_, player_->GetWorldTransform().rotation_);
+
+    
 
     // 3Dモデルの生成
     modelSkyDome_ = Model::CreateFromOBJ("skydome", true);
@@ -107,13 +122,16 @@ void GameScene::Initialize() {
     //skydome_->SetParent(railCamera_->GetWorldTransform());
 
     // オブジェクトたちの生成
-    /*arrow_ = std::make_unique<Object>();*/
+    arrowUp_ = std::make_unique<Object>();
+    arrowDown_ = std::make_unique<Object>();
     gear8_ = std::make_unique<Object>();
     gear12_ = std::make_unique<Object>();
     gear16_ = std::make_unique<Object>();
     // オブジェクトたちの初期化
-    /*arrow_->Initialize(arrowModel_, texArrowHandle_, { 87, 90, 110 }, { 0,Calc::ConvertToRadian(90),0 });*/
-    /*arrow_->SetIsRolling(true);*/
+    arrowUp_->Initialize(arrowModel_, texArrowHandle_, { 94.4f, 89.2f, 110 }, { Calc::ConvertToRadian(-90),Calc::ConvertToRadian(0),0 });
+    arrowUp_->SetScale({ 0.7,0.7,0.7 });
+    arrowDown_->Initialize(arrowModel_, texArrowHandle_, { 94.4f, 87.7f, 110 }, { Calc::ConvertToRadian(90),Calc::ConvertToRadian(0),0 });
+    arrowDown_->SetScale({ 0.7,0.7,0.7 });
     gear8_->Initialize(gear8Model_, texGear8Handle_, { 86, 90, 110 }, { 0,Calc::ConvertToRadian(90),0 });
     gear8_->SetIsRolling(true);
     gear8_->SetIsLeftRoll(true);
@@ -132,6 +150,10 @@ void GameScene::Initialize() {
     YESGear12_ = std::make_unique<Object>();
     NOGear12_ = std::make_unique<Object>();
     PLAYTUTORIAL_ = std::make_unique<Object>();
+    W_ = std::make_unique<Object>();
+    S_ = std::make_unique<Object>();
+    A_ = std::make_unique<Object>();
+    D_ = std::make_unique<Object>();
     // 文字オブジェクト初期化
     RIPTA_->Initialize(RIPTAModel_, texRIPTAHandle_, { 90,94,110 }, { 0,Calc::ConvertToRadian(90),0 });
     RIPTAGear16L_->Initialize(gear16Model_, texGear16Handle_, { 84,94,110 }, { 0,Calc::ConvertToRadian(90),0 });
@@ -148,8 +170,15 @@ void GameScene::Initialize() {
     YESGear12_->SetIsRolling(true);
     NOGear12_->Initialize(gear12Model_, texGear12Handle_, { 87.2f, 87.5f, 113 }, { 0,Calc::ConvertToRadian(90),0 });
     NOGear12_->SetIsRolling(true);
-    PLAYTUTORIAL_->Initialize(PLAYTUTORIALModel_, texPLAYTUTORIALHandle_, { 90.3f,95,110 }, { 0,Calc::ConvertToRadian(90),0 });
-    PLAYTUTORIAL_->SetScale({ 0.9,0.9,0.9 });
+    PLAYTUTORIAL_->Initialize(PLAYTUTORIALModel_, texPLAYTUTORIALHandle_, { 91,98,135 }, { 0,Calc::ConvertToRadian(90),0 });
+    PLAYTUTORIAL_->SetScale({ 1.5,1.5,1.5 });
+    W_->Initialize(WModel_, texWASDHandle_, { 95,91,113 }, { 0,Calc::ConvertToRadian(90),0 });
+    W_->SetScale({ 0.7,0.7,0.7 });
+    S_->Initialize(SModel_, texWASDHandle_, { 95,85.5f,113 }, { 0,Calc::ConvertToRadian(90),0 });
+    S_->SetScale({ 0.7,0.7,0.7 });
+    A_->Initialize(WModel_, texWASDHandle_, { 95,91,113 }, { 0,Calc::ConvertToRadian(90),0 });
+    D_->Initialize(WModel_, texWASDHandle_, { 95,91,113 }, { 0,Calc::ConvertToRadian(90),0 });
+
 
 
     stage_->InitStage(model_, textureHandle_);
@@ -190,7 +219,7 @@ void GameScene::Update() {
                 gameScene_ = Tutorial;
                 stage_->Reset();
                 stage_->LoadStage("Resources/Task1_2Resources/tutorial.csv");
-                player_->SetPos({ 92,94,92 });
+                player_->SetPos({ 92,96,92 });
             }
             else {
                 gameScene_ = SelectStage;
@@ -201,6 +230,8 @@ void GameScene::Update() {
 #pragma region オブジェクト更新
         // レールカメラの更新
         railCamera_->Update();
+        arrowUp_->Update();
+        arrowDown_->Update();
         // オブジェクト
         gear8_->Update();
         if (isPlayTutorial) {
@@ -213,11 +244,29 @@ void GameScene::Update() {
         YES_->Update();
         NO_->Update();
         PLAYTUTORIAL_->Update();
+        W_->Update();
+        S_->Update();
 #pragma endregion
     }
     else if (gameScene_ == Tutorial) {
-        // レールカメラの更新
-        railCamera_->Update();
+#pragma region キーボード操作
+        if (input_->TriggerKey(DIK_C)) {
+            if (indexCamera_ == Rail) {
+                indexCamera_ = FPS;
+            }
+            else if (indexCamera_ == FPS) {
+                indexCamera_ = Rail;
+            }
+        }
+#pragma endregion
+        // カメラの更新
+        if (indexCamera_ == Rail) {
+            railCamera_->Update();
+        }
+        else if (indexCamera_ == FPS) {
+            fpsCamera_->Update(player_->GetWorldTransform());
+        }
+        
 
         // 自機更新 
         player_->Update();
@@ -261,26 +310,26 @@ void GameScene::Update() {
     }
 
 #ifdef _DEBUG
-    if (input_->TriggerKey(DIK_C)) {
-        if (isDebugCameraActive_) {
-            isDebugCameraActive_ = false;
-        }
-        else {
-            isDebugCameraActive_ = true;
-        }
-    }
+    //if (input_->TriggerKey(DIK_C)) {
+    //    if (isDebugCameraActive_) {
+    //        isDebugCameraActive_ = false;
+    //    }
+    //    else {
+    //        isDebugCameraActive_ = true;
+    //    }
+    //}
 
-    // カメラの処理
-    if (isDebugCameraActive_) {
-        //デバックカメラの更新
-        debugCamera_->Update();
-        debugViewProjection_ = debugCamera_->GetViewProjection();
-        viewProjection_.matView = debugViewProjection_.matView;
-        viewProjection_.matProjection = debugViewProjection_.matProjection;
-    }
-    else {
-        viewProjection_.UpdateMatrix();
-    }
+    //// カメラの処理
+    //if (isDebugCameraActive_) {
+    //    //デバックカメラの更新
+    //    debugCamera_->Update();
+    //    debugViewProjection_ = debugCamera_->GetViewProjection();
+    //    viewProjection_.matView = debugViewProjection_.matView;
+    //    viewProjection_.matProjection = debugViewProjection_.matProjection;
+    //}
+    //else {
+    //    viewProjection_.UpdateMatrix();
+    //}
 
     debugText_->SetPos(600, 400);
     debugText_->Printf("gameScene_:%d", gameScene_);
@@ -325,6 +374,8 @@ void GameScene::Draw() {
         PRESSSPACE_->Draw(railCamera_->GetViewProjection(), false);
     }
     else if (gameScene_ == GuidQuestion) {
+        arrowUp_->Draw(railCamera_->GetViewProjection(), false);
+        arrowDown_->Draw(railCamera_->GetViewProjection(), false);
         gear8_->Draw(railCamera_->GetViewProjection(), false);
         gear16_->Draw(railCamera_->GetViewProjection(), false);
         // 文字
@@ -333,16 +384,30 @@ void GameScene::Draw() {
         YESGear12_->Draw(railCamera_->GetViewProjection(), false);
         NOGear12_->Draw(railCamera_->GetViewProjection(), false);
         PLAYTUTORIAL_->Draw(railCamera_->GetViewProjection(), false);
+        W_->Draw(railCamera_->GetViewProjection(), false);
+        S_->Draw(railCamera_->GetViewProjection(), false);
     }
     else if (gameScene_ == Tutorial) {
-        // 自キャラの描画
-        player_->Draw(railCamera_->GetViewProjection());
-        //player_->Draw(debugCamera_->GetViewProjection());
+        if (indexCamera_ == Rail) {
+            // 自キャラの描画
+            player_->Draw(railCamera_->GetViewProjection());
+            //player_->Draw(debugCamera_->GetViewProjection());
 
-        // 天球の描画
-        //skydome_->Draw(railCamera_->GetViewProjection());
+            // 天球の描画
+            //skydome_->Draw(railCamera_->GetViewProjection());
 
-        stage_->DrawStage(railCamera_->GetViewProjection());
+            stage_->DrawStage(railCamera_->GetViewProjection());
+        }
+        else if (indexCamera_ == FPS) {
+            // 自キャラの描画
+            /*player_->Draw(fpsCamera_->GetViewProjection());*/
+            //player_->Draw(debugCamera_->GetViewProjection());
+
+            // 天球の描画
+            //skydome_->Draw(railCamera_->GetViewProjection());
+
+            stage_->DrawStage(fpsCamera_->GetViewProjection());
+        }
     }
     else if (gameScene_ == SelectStage) {
 
