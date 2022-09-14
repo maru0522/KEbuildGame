@@ -16,12 +16,15 @@ void Player::Initialize(Model* model, uint32_t textureHandle, uint32_t textureHa
     // シングルトンインスタンスを取得する
     input_ = Input::GetInstance();
     debugText_ = DebugText::GetInstance();
+    audio_ = Audio::GetInstance();
 
     worldTransform_.translation_ = { 92,96,92 };
     worldTransform_.rotation_ = { Calc::ConvertToRadian(0),Calc::ConvertToRadian(0),Calc::ConvertToRadian(00) };
     //worldTransform_.rotation_ = { Calc::ConvertToRadian(-10),0,0 };
 
     worldTransform_.Initialize();
+
+    pMoveSound_ = audio_->LoadWave("sounds/pMoveSound.wav");
 
     floorDefRot_[0] = {};
     floorDefRot_[Top] = { Calc::ConvertToRadian(0) ,0, Calc::ConvertToRadian(0) };      // XZ
@@ -828,6 +831,7 @@ void Player::Move()
             }
             indexMoveActionRemain_--;
             keyMemory_.push_back('W');
+            audio_->PlayWave(pMoveSound_, false, 0.2);
         }
         if (input_->TriggerKey(DIK_S)) {
             if (1 < nCubePos_.x && nCubePos_.x < stage_->squareLengthX_ - 2 && // マス目単位：1 < x & x < (100 - 2) 
@@ -1693,6 +1697,7 @@ void Player::Move()
             }
             indexMoveActionRemain_--;
             keyMemory_.push_back('S');
+            audio_->PlayWave(pMoveSound_, false, 0.2);
         }
         if (input_->TriggerKey(DIK_A)) {
             if (1 < nCubePos_.x && nCubePos_.x < stage_->squareLengthX_ - 2 && // マス目単位：1 < x & x < (100 - 2) 
@@ -2770,6 +2775,7 @@ void Player::Move()
             }
             indexMoveActionRemain_--;
             keyMemory_.push_back('A');
+            audio_->PlayWave(pMoveSound_, false, 0.2);
         }
         if (input_->TriggerKey(DIK_D)) {
             if (1 < nCubePos_.x && nCubePos_.x < stage_->squareLengthX_ - 2 && // マス目単位：1 < x & x < (100 - 2) 
@@ -3822,22 +3828,23 @@ void Player::Move()
             }
             indexMoveActionRemain_--;
             keyMemory_.push_back('D');
+            audio_->PlayWave(pMoveSound_, false, 0.2);
         }
     }
 
 #ifdef _DEBUG
-    if (input_->TriggerKey(DIK_SPACE)) {
-        nCubePos_.y++;
-        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
-        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
-        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
-    }
-    if (input_->TriggerKey(DIK_LSHIFT)) {
-        nCubePos_.y--;
-        worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
-        worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
-        worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
-    }
+    //if (input_->TriggerKey(DIK_SPACE)) {
+    //    nCubePos_.y++;
+    //    worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+    //    worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+    //    worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+    //}
+    //if (input_->TriggerKey(DIK_LSHIFT)) {
+    //    nCubePos_.y--;
+    //    worldTransform_.translation_.x = nCubePos_.x * stage_->blockSideLength_;
+    //    worldTransform_.translation_.y = nCubePos_.y * stage_->blockSideLength_;
+    //    worldTransform_.translation_.z = nCubePos_.z * stage_->blockSideLength_;
+    //}
 
     if (input_->TriggerKey(DIK_I)) {
         worldTransform_.rotation_.x += Calc::ConvertToRadian(45);
@@ -4653,6 +4660,7 @@ void Player::RepeatMove()
             }
             indexVecRef_++;
             indexMoveActionRemain_--;
+            audio_->PlayWave(pMoveSound_, false, 0.2);
         }
         else if (keyMemory_[indexVecRef_] == 'S') {
             // Sが入っていればDIK_S時と同等の挙動
@@ -5519,6 +5527,7 @@ void Player::RepeatMove()
             }
             indexVecRef_++;
             indexMoveActionRemain_--;
+            audio_->PlayWave(pMoveSound_, false, 0.2);
         }
         else if (keyMemory_[indexVecRef_] == 'A') {
             // Aが入っていればDIK_A時と同等の挙動
@@ -6597,6 +6606,7 @@ void Player::RepeatMove()
             }
             indexVecRef_++;
             indexMoveActionRemain_--;
+            audio_->PlayWave(pMoveSound_, false, 0.2);
         }
         else if (keyMemory_[indexVecRef_] == 'D') {
             // Dが入っていればDIK_D時と同等の挙動
@@ -7650,6 +7660,7 @@ void Player::RepeatMove()
             }
             indexVecRef_++;
             indexMoveActionRemain_--;
+            audio_->PlayWave(pMoveSound_, false, 0.2);
         }
 
         // 参照番号が要素数と同じになったら参照番号を0に戻す
@@ -7972,14 +7983,23 @@ void Player::Update()
     debugText_->Printf("key_w:(%d)", input_->PushKey(DIK_W));
 #endif
     if (isRepeat_ == Learn) {
-        // 移動
-        Move();
+        if (!input_->PushKey(DIK_LSHIFT)) {
+            // 移動
+            Move();
+        }
     }
     else {
         if (fpsCount_ % speedRepeat_ == 0) {
             // 自動的に移動
             RepeatMove();
         }
+    }
+
+    if (input_->PushKey(DIK_T)) {
+        speedRepeat_ = 40;
+    }
+    else {
+        speedRepeat_ = 70;
     }
 
     // どの面に立っているか
@@ -8017,7 +8037,6 @@ void Player::Reset()
 {
     nCubePos_ = { 0,0,0 };
 
-    worldTransform_.translation_ = { 96,96,96 };
     worldTransform_.rotation_ = { 0,0,0 };
 
     face_ = 0;

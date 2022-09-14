@@ -15,8 +15,8 @@ void Block::Initilize(Model* blockModel, uint32_t indexBlock)
 
     textures_[0] = TextureManager::Load("blockTextures/Brick.png");
     textures_[1] = TextureManager::Load("blockTextures/WoodBox.png");
-    textures_[2] = TextureManager::Load("Task1_2Resources/bullet.png");
-    textures_[3] = TextureManager::Load("Task1_2Resources/enemyBullet.png");
+    textures_[2] = TextureManager::Load("blockTextures/Memory.png");
+    textures_[3] = TextureManager::Load("blockTextures/Carpet.png");
 
     worldTransform_.Initialize();
     worldTransform_.UpdateMatrix();

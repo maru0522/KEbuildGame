@@ -4,6 +4,7 @@
 #include "Matrix4.h"
 #include "MathUtility.h"
 #include <stdint.h>
+#include <cmath>
 
 namespace Calc {
 	const float PI = 3.141592654f;
@@ -15,4 +16,6 @@ namespace Calc {
 
 	int32_t TransAngle(const int32_t angle);
 	int32_t Trans360(const int32_t angle);
+
+	double EaseOutSine(double num);
 }

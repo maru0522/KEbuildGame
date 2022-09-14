@@ -8,6 +8,7 @@
 #include <memory>
 #include <list>
 #include "Stage.h"
+#include "Audio.h"
 
 enum Floor {
 	Top = 1,	// 1
@@ -66,6 +67,7 @@ public:
 	Vector3 GetWorldPosition();
 
 	uint32_t GetUnderBlockId() { return underfootBlockId_; }
+	uint32_t GetRemain() { return indexMoveActionRemain_; }
 
 	WorldTransform& GetWorldTransform() { return worldTransform_; }
 	WorldTransform* GetWorldTransform2() { return &worldTransform_; }
@@ -74,6 +76,7 @@ public:
 
 	void SetParent(WorldTransform* worldTransform) { worldTransform_.parent_ = worldTransform; }
 	void SetPos(Vector3 pos) { worldTransform_.translation_ = pos; }
+	void SetRot(Vector3 rot) { worldTransform_.rotation_ = rot; }
 	void SetIsRepeat(bool isRepeat) { isRepeat_ = isRepeat; }
 	void SetActionRemain(uint32_t index) { indexMoveActionRemain_ = index; }
 private:
@@ -98,6 +101,9 @@ private:
 
 	uint32_t speedRepeat_ = 70;
 
+	// 音
+	uint32_t pMoveSound_ = 0;
+
 	// モデル
 	Model* model_ = nullptr;
 	// テクスチャハンドル
@@ -108,4 +114,5 @@ private:
 
 	Input* input_ = nullptr;
 	DebugText* debugText_ = nullptr;
+	Audio* audio_ = nullptr;
 };

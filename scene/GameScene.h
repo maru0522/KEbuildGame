@@ -29,6 +29,12 @@ enum Scene {
 	PlayGame		// 4
 };
 
+enum GameSceneStats {
+	Operate,
+	Clear,
+	Gameover
+};
+
 enum Camera {
 	Rail,
 	FPS
@@ -78,6 +84,27 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 	Stage* stage_ = nullptr;
 
+	// スプライトテクスチャハンドル
+	uint32_t texTutorialMessageBackHandle_ = 0;
+	std::array<uint32_t, 15> texTutorialMessages_ = {};
+	uint32_t texSpriteW_ = 0;
+	uint32_t texSpriteA_ = 0;
+	uint32_t texSpriteS_ = 0;
+	uint32_t texSpriteD_ = 0;
+	uint32_t texSpriteWPush_ = 0;
+	uint32_t texSpriteAPush_ = 0;
+	uint32_t texSpriteSPush_ = 0;
+	uint32_t texSpriteDPush_ = 0;
+	uint32_t texSpriteWASDBack_ = 0;
+	uint32_t texSpriteC_ = 0;
+	uint32_t texSpriteCPush_ = 0;
+	uint32_t texSpriteCameraRIPTA_ = 0;
+	uint32_t texSpriteCameraMIWATASHI_ = 0;
+	std::array<uint32_t, 10> texSpriteScores_ = {};
+	uint32_t texSpriteStringRemain_ = 0;
+	uint32_t texTutorialDisplayMemoryBlock_ = 0;
+	uint32_t texTutorialDisplayGoalBlock_ = 0;
+
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 	uint32_t testPlayerHandle_ = 0;
@@ -95,6 +122,8 @@ private: // メンバ変数
 	uint32_t texNOHandle_ = 0;
 	uint32_t texPLAYTUTORIALHandle_ = 0;
 	uint32_t texWASDHandle_ = 0;
+	uint32_t texCLEARHandle_ = 0;
+	uint32_t texGAMEOVERHandle_ = 0;
 
 
 	ViewProjection viewProjection_;
@@ -121,10 +150,35 @@ private: // メンバ変数
 	Model* SModel_ = nullptr;
 	Model* AModel_ = nullptr;
 	Model* DModel_ = nullptr;
+	Model* CLEARModel_ = nullptr;
+	Model* GAMEOVERModel_ = nullptr;
 
 
-	//
-	Sprite* sprite_ = nullptr;
+	// スプライト
+	std::unique_ptr<Sprite> tutorialMessageBack_;
+	std::array<std::unique_ptr<Sprite>, 15> tutorialMessages_;
+	std::unique_ptr<Sprite> spriteW_;
+	std::unique_ptr<Sprite> spriteA_;
+	std::unique_ptr<Sprite> spriteS_;
+	std::unique_ptr<Sprite> spriteD_;
+	std::unique_ptr<Sprite> spriteWPush_;
+	std::unique_ptr<Sprite> spriteAPush_;
+	std::unique_ptr<Sprite> spriteSPush_;
+	std::unique_ptr<Sprite> spriteDPush_;
+	std::unique_ptr<Sprite> spriteWASDBack_;
+	std::unique_ptr<Sprite> spriteC_;
+	std::unique_ptr<Sprite> spriteCPush_;
+	std::unique_ptr<Sprite> spriteCameraRIPTA_;
+	std::unique_ptr<Sprite> spriteCameraMIWATASHI_;
+	std::unique_ptr<Sprite> spriteCCameraBack_;
+	std::array<std::unique_ptr<Sprite>, 3> spriteRemain_;
+	/*特別*/
+	std::array<uint32_t, 3> indexRemain_;
+	std::unique_ptr<Sprite> spriteStringRemain_;
+	std::unique_ptr<Sprite> spriteStringRemainBack_;
+	std::unique_ptr<Sprite> tutorialDisplayMemoryBlock_;
+	std::unique_ptr<Sprite> tutorialDisplayGoalBlock_;
+
 
 
 	std::unique_ptr<Player> player_;
@@ -138,6 +192,10 @@ private: // メンバ変数
 	std::unique_ptr<Object> gear8_;
 	std::unique_ptr<Object> gear12_;
 	std::unique_ptr<Object> gear16_;
+	std::unique_ptr<Object> selectStageGear8_;
+	std::array<std::unique_ptr<Object>, 4> stage1_4Gears8_;
+	std::array<std::unique_ptr<Object>, 4> stage5_8Gears12_;
+	std::array<std::unique_ptr<Object>, 2> stage9_10Gears16_;
 
 	// 文字
 	std::unique_ptr<Object> RIPTA_;
@@ -153,7 +211,18 @@ private: // メンバ変数
 	std::unique_ptr<Object> S_;
 	std::unique_ptr<Object> A_;
 	std::unique_ptr<Object> D_;
+	std::unique_ptr<Object> CLEAR_;
+	std::unique_ptr<Object> GAMEOVER_;
 
+
+	// 音
+	uint32_t clickSound_ = 0;
+	uint32_t moveCursorSound_ = 0;
+	uint32_t clearSound_ = 0;
+	uint32_t gameOverSound_ = 0;
+	uint32_t BGM_ = 0;
+
+	bool isFanfare_ = false;
 
 	// 3Dモデル
 	Model* modelSkyDome_ = nullptr;
@@ -162,11 +231,24 @@ private: // メンバ変数
 	// カメラ
 	uint32_t indexCamera_ = Rail;
 
-	// 足元のブロック
-	uint32_t underfootBlock_ = 0;
-
 	// ゲームシーン
-	uint32_t gameScene_ = 0;
+	uint32_t gameScene_ = Title;
+	// ゲーム中の状態
+	uint32_t gameStats_ = Operate;
+
+	// チュートリアルメッセージ番号
+	uint32_t indexMessage_ = 0;
+
+	// SelectStage番号
+	uint32_t indexSelectStage = 1;
+
+	// PlayGameステージ番号
+	uint32_t indexPlayGameStage = 1;
+
+
+	//uint32_t fpsCount4TutorialCam_ = 0;
+	//Vector3 moveValue4TutorialCam_ = { 0,0,0 };
+	//bool isFinishEasing4TutorialCam_ = false;
 
 	// Select
 	bool isPlayTutorial = true;

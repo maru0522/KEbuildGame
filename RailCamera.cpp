@@ -23,8 +23,9 @@ void RailCamera::Update()
 {
 #pragma region worldTransform
     // ワールドトランスフォームの座標の数値を加算（移動）
+#ifdef _DEBUG
     Move();
-
+#endif // _DEBUG
     // ワールドトランスフォームの角度の数値を加算（回転）
 
     // ワールドトランスフォームのワールド行列再計算
@@ -83,21 +84,41 @@ Vector3 RailCamera::GetWorldPosition()
     return worldPos;
 }
 
-void RailCamera::SetWorldPosition(Vector3& pos)
+void RailCamera::SetWorldPosition(Vector3 pos)
 {
     worldTransform_.translation_ = pos;
 }
 
 void RailCamera::Move()
 {
-    // 移動ベクトル
-    Vector3 move = { 0,0,0 };
-
     // 移動速さ
     const float kCharacterSpeed = 0.2f;
+    Vector3 move;
+    if (input_->PushKey(DIK_LSHIFT)) {
+        if (input_->PushKey(DIK_W)) {
+            move = { 0,0,kCharacterSpeed };
+            velocity_ = Calc::DotVecMat(move, worldTransform_.matWorld_);
+            worldTransform_.translation_ += velocity_;
+        }
+        if (input_->PushKey(DIK_S)) {
+            move = { 0,0, -kCharacterSpeed };
+            velocity_ = Calc::DotVecMat(move, worldTransform_.matWorld_);
+            worldTransform_.translation_ += velocity_;
+        }
+        if (input_->PushKey(DIK_A)) {
+            move = { -kCharacterSpeed ,0,0 };
+            velocity_ = Calc::DotVecMat(move, worldTransform_.matWorld_);
+            worldTransform_.translation_ += velocity_;
+        }
+        if (input_->PushKey(DIK_D)) {
+            move = { kCharacterSpeed ,0,0 };
+            velocity_ = Calc::DotVecMat(move, worldTransform_.matWorld_);
+            worldTransform_.translation_ += velocity_;
+        }
+    }
 
     // 押した方向で移動ベクトルを変更
-    if (input_->PushKey(DIK_UPARROW)) {
+    /*if (input_->PushKey(DIK_UPARROW)) {
         move = { 0,0,kCharacterSpeed };
     }
     if (input_->PushKey(DIK_DOWNARROW)) {
@@ -108,7 +129,7 @@ void RailCamera::Move()
     }
     if (input_->PushKey(DIK_RIGHTARROW)) {
         move = { kCharacterSpeed,0,0 };
-    }
+    }*/
 
     //// 押した方向で移動ベクトルを変更
     //if (input_->TriggerKey(DIK_W)) {
@@ -124,12 +145,12 @@ void RailCamera::Move()
     //    move = { kCharacterSpeed,0,0 };
     //}
 #ifdef _DEBUG
-    if (input_->PushKey(DIK_NUMPAD8)) {
+    /*if (input_->PushKey(DIK_NUMPAD8)) {
         move = { 0,kCharacterSpeed,0 };
     }
     if (input_->PushKey(DIK_NUMPAD2)) {
         move = { 0,-kCharacterSpeed,0 };
-    }
+    }*/
 
     /*if (input_->TriggerKey(DIK_SPACE)) {
         move = { 0,kCharacterSpeed,0 };
@@ -138,7 +159,7 @@ void RailCamera::Move()
         move = { 0,-kCharacterSpeed,0 };
     }*/
 
-    if (input_->TriggerKey(DIK_NUMPAD6)) {
+    /*if (input_->TriggerKey(DIK_NUMPAD6)) {
         worldTransform_.rotation_.y += Calc::ConvertToRadian(45);
     }
     if (input_->TriggerKey(DIK_NUMPAD4)) {
@@ -150,10 +171,8 @@ void RailCamera::Move()
     }
     if (input_->TriggerKey(DIK_NUMPAD3)) {
         worldTransform_.rotation_.x -= Calc::ConvertToRadian(45);
-    }
+    }*/
 #endif
-
-    worldTransform_.translation_.x += move.x;
-    worldTransform_.translation_.y += move.y;
-    worldTransform_.translation_.z += move.z;
+    worldTransform_.translation_ += velocity_;
+    velocity_ = { 0,0,0 };
 }

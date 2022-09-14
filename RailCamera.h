@@ -12,10 +12,11 @@ public:
 
     ViewProjection GetViewProjection() { return viewProjection_; }
     WorldTransform* GetWorldTransform() { return &worldTransform_; }
+    WorldTransform& GetWorldTransform2() { return worldTransform_; }
 
     // ƒ[ƒ‹ƒhÀ•W‚ğæ“¾
     Vector3 GetWorldPosition();
-    void SetWorldPosition(Vector3& pos);
+    void SetWorldPosition(Vector3 pos);
 
 private:
     void Move();
@@ -27,4 +28,6 @@ private:
 
     Input* input_ = nullptr;
     DebugText* debugText_ = nullptr;
+
+    Vector3 velocity_;
 };

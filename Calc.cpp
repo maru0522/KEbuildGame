@@ -29,3 +29,8 @@ int32_t Calc::Trans360(const int32_t angle)
 	if (angle == 360)
 		return 0;
 }
+
+double Calc::EaseOutSine(double num)
+{
+	return sin((num * PI) / 2);
+}

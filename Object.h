@@ -18,6 +18,7 @@ public:
 	void SetIsLeftRoll(bool isLeftRoll) { isLeftRoll_ = isLeftRoll; }
 	void SetPos(Vector3 pos) { worldTransform_.translation_ = pos; }
 	void SetScale(Vector3 scale) { worldTransform_.scale_ = scale; }
+	void SetRot(Vector3 rot) { worldTransform_.rotation_ = rot; }
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
